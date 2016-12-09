@@ -3,7 +3,7 @@
 
     <groupId>org.tango</groupId>
     <artifactId>SettingsManager</artifactId>
-    <version>1.4</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SettingsManager Tango server</name>
