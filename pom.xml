@@ -21,7 +21,7 @@
 
     <scm>
         <connection>scm:git:git@github.com:tango-controls/SettingManager.git</connection>
-        <developerConnection>scm:git:git@github.com:tango-controls/SetttingsManager.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:tango-controls/SettingsManager.git</developerConnection>
         <url>https://github.com/tango-controls/SettingsManager</url>
         <tag>HEAD</tag>
     </scm>
@@ -40,19 +40,14 @@
             <version>RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.tango</groupId>
-            <artifactId>TangORB</artifactId>
+            <groupId>org.tango.atk</groupId>
+            <artifactId>ATKCore</artifactId>
             <version>RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.tango.atk</groupId>
-            <artifactId>ATKCore</artifactId>
-            <version>9.1.23</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tango.atk</groupId>
             <artifactId>ATKWidget</artifactId>
-            <version>9.1.23</version>
+            <version>RELEASE</version>
         </dependency>
     </dependencies>
 
