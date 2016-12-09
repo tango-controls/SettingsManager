@@ -47,12 +47,12 @@
         <dependency>
             <groupId>org.tango.atk</groupId>
             <artifactId>ATKCore</artifactId>
-            <version>RELEASE</version>
+            <version>9.1.23</version>
         </dependency>
         <dependency>
             <groupId>org.tango.atk</groupId>
             <artifactId>ATKWidget</artifactId>
-            <version>RELEASE</version>
+            <version>9.1.23</version>
         </dependency>
     </dependencies>
 
