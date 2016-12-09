@@ -3,7 +3,7 @@
 
     <groupId>org.tango.rest</groupId>
     <artifactId>SettingsManager</artifactId>
-    <version>1.0</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
 
     <name>SettingsManager Tango server</name>
@@ -37,6 +37,11 @@
         <dependency>
             <groupId>org.tango</groupId>
             <artifactId>JTangoServer</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tango</groupId>
+            <artifactId>TangORB</artifactId>
             <version>RELEASE</version>
         </dependency>
         <dependency>
