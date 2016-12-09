@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> SettingsManager Tango Class Description </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<ul>
+	<br><br><br>
+	<table border="0" width="100%">
+		<Tr>
+			<td> <font size="+1"><u><b> SettingsManager Class Identification : </b></u></font> </td>
+			<td> <font size="+1"><u><b> SettingsManager Class Inheritance : </b></u></font> </td>
+		</tr>
+		<td><ul>
+			<table border="0">
+				<Tr>
+					<td> Contact </td><td> : at esrf.fr - accelerator-control</td>
+				</tr>
+				<tr>
+					<td> Class Family </td><td> : Archiving
+				</tr>
+				<tr>
+					<td> Platform </td><td> : All Platforms </td>
+				</tr>
+				<tr>
+					<td> Bus </td><td> : Not Applicable </td>
+				</tr>
+				<tr>
+					<td> Manufacturer </td><td> : none </td>
+				</tr>
+				<tr>
+					<td> Manufacturer ref.</td><td> :  </td>
+				</tr>
+			</Table>
+		</ul></td>
+		<td>
+			<ul><li> <a href="http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/tango_java_api/" target="new"> Tango::DeviceImpl</a></li>
+			<ul> <li> SettingsManager</li>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+		</td>
+	</Table>
+	<br><br><br>
+	<font size="+1"><u><b> SettingsManager Class Description : </b></u></font>
+	<br><br>
+	<ul>
+		This idea is to standardize and centralize the settings management for the control system.<Br>
+		It will have to be accessible from client applications and servers written in C++, Java or Python.<Br>
+		<Br>
+		The most flexible system to store the settings is to use files on disk.<Br>
+		Users will be able to manage sub system, copies or edition (device/attribute renaming).<Br>
+		All settings files will be store under a $SETTINGS_ROOT directory.<Br>
+		A subdirectory will be created for each accelerator system.<Br>
+		To be accessible from all languages, a TANGO class will manage read, write and apply settings for attributes.<Br>
+		Each instance of this class will manage a system (SRRF, RIPS, LINAC, ...) files under its<Br>
+		own subdirectory fixed by a TANGO property.<Br>
+		This class will be able to:<Br>
+		 - Write a settings file with an optional list of attribute as input argument. This class will be responsible<Br>
+		   to do not write above its subdirectory.<Br>
+		 - Get file content to preview file with string as output argument.<Br>
+		 - Apply settings to attributes.<Br>
+		 - Read a settings file and return content in a pipe (att1 name, att1 value, att2 name, att2 value, ...)
+		
+		<!---  /*PROTECTED REGION ID(index.html) ENABLED START*/  --->
+			<!--- Add your own documentation, pictures, links,.... --->
+			
+		<!---  /*PROTECTED REGION END*/  --->
+		
+	</ul>
+</ul>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+    <Title> SettingsManager API </Title>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#7F00FF" ALINK="#FF0000">
+
+    <!------------------  ----------------------->
+    <ul>
+        <table Border=0 width="100%">
+            <tr>
+                <td> <h2><u>Java Client Api for SettingsManager </u></h2> </td>
+                <td> <img src="http://www.tango-controls.org/static/tango/img/logo_tangocontrols.png"> </td>
+            </tr>
+        </table>
+        <br>
+        <ul>
+            <li> How to use API</li></font>
+            To generate or apply a settings file, read or write attributes will be done.<br>
+            The number and the response time of attributes is unknown and can be a quiet long.<br>
+            For this reason, the generate/apply calls will be executed and returned after a while.<br>
+            The generate/apply action will be done with a long TIMEOUT value.<br>
+            <ul>
+                The default value is 5 seconds but it could be changed using:
+                <li> <b>SETTINGS_TIMEOUT</b> VM property</li>
+                <li> <b>SETTINGS_TIMEOUT</b> environment variable</li>
+            </ul>
+            The <b>JAVA client API</b> provides a listener
+            (<a href=classes/org/tango/settingsmanager/client/SettingsManagedListener.html>SettingsManagedListener</a>)
+             called after execution, giving an event
+            (<a href=classes/org/tango/settingsmanager/client/SettingsManagedEvent.html>SettingsManagedEvent</a>)
+             containing execution information.<br>
+
+            <br>
+            <table Border=0>
+                <tr bgColor="#ddeeff"><td colSpan=1>
+                    <pre><code class="language-java">
+    import org.tango.settingsmanager.client.SettingsManagerClient;
+    import org.tango.settingsmanager.client.SettingsManagedListener;
+    import org.tango.settingsmanager.client.SettingsManagedEvent;
+
+        - - - - -
+         private SettingsManagerClient settingsClient;
+        - - - - -
+        <font COLOR="#3388ff">//  Create a settings manager client and add a listener </font>
+        settingsClient = new SettingsManagerClient(settingsProjectName);
+        settingsClient.addSettingsAppliedListener(new SettingsManagedListener() {
+            @Override
+            public void settingsManaged(SettingsManagedEvent event) {
+                settingsAppliedPerformed(event);
+            }
+        });
+        - - - - -
+                    </code></pre>
+                </Td></Tr>
+            </table>
+            <br>
+            <br>
+
+            Then to apply settings, the SettingsManagerClient object will call with apply method.<br>
+            This method will propose a file chooser to select a file to apply.<br>
+            This method will return the selected file name. If no selection, the file name will be null.<br>
+            If the file name is not null, after a while, the specified listener will be called.<br>
+            The <b>SettingsManagedEvent</b> event propose methods to get execution information.<br>
+            See following example:
+
+            <br>
+            <table Border=0>
+                <tr bgColor="#ddeeff" ><td colSpan=1>
+                    <pre><code class="language-java">
+    private void applySettingsItemActionPerformed(ActionEvent evt) {
+        try {
+            <font COLOR="#3388ff">//  Apply settings</font>
+            String fileName = settingsClient.applySettings(this);
+            if (fileName!=null) {
+                System.out.println("Applying " + fileName);
+            }
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }
+    - - - - - -
+    private void settingsAppliedPerformed(SettingsManagedEvent event) {
+        String fileName = event.getFileName();
+        switch (event.getAction()) {
+            case SettingsManagerClient.APPLIED:
+                <font COLOR="#3388ff">//  Display applied results</font>
+                if (event.hasFailed()) {
+                    ErrorPane.showErrorMessage(new JFrame(),
+                        "Applying file " + fileName, event.getDevFailed());
+                } else {
+                    JOptionPane.showMessageDialog(new JFrame(),
+                        "Settings loaded from  " + event.getFileName());
+                }
+                break;
+            case SettingsManagerClient.GENERATED:
+                <font COLOR="#3388ff">//  Display generated results</font>
+                if (event.hasFailed()) {
+                    ErrorPane.showErrorMessage(new JFrame(),
+                        "Generated file " + fileName, event.getDevFailed());
+                } else {
+                    JOptionPane.showMessageDialog(new JFrame(),
+                        "Settings saved in  " + event.getFileName());
+                }
+                break;
+        }
+    }
+                    </code></pre>
+                </Td></Tr>
+            </table>
+        </ul>
+    </ul>
+</BODY>
+</HTML>

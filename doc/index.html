@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+    <Title> SettingsManager API </Title>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#7F00FF" ALINK="#FF0000">
+
+    <!------------------  ----------------------->
+	<ul>
+		<table Border=0 width="100%">
+			<tr>
+				<td> <h2><u>a TANGO class to manage settings : SettingsManager </u></h2> </td>
+				<td> <a href="http://www.tango-controls.org">
+                    <img src="http://www.tango-controls.org/static/tango/img/logo_tangocontrols.png" alt=""></a> </td>
+			</tr>
+		</table>
+		<br>
+		<ul>
+			<br>
+			<li><b><u>Principle:</u></b></li>
+			This idea is to standardize and centralize the settings management for the control system.<br>
+			It will have to be accessible from client applications and servers written
+			in C++, Java or Python.<br>
+			The most flexible system to store the settings is to use files on disk.
+			Users will be able to manage sub system, copies or edition (device/attribute renaming).<br>
+			All  settings files will be store under a "RootPath" directory.<br>
+			A subdirectory will be created for each accelerator system.<br>
+			To be accessible from all languages, a TANGO class will manage
+			read, write and apply settings for attributes.<br>
+			Each instance of this class will manage a system  (SRRF, RIPS, LINAC, ...) files under its
+			own subdirectory fixed by a TANGO property.<br><br>
+			This class will be able to:
+			<ul>
+				<li>Write a settings file with an optional list of attribute as input argument.
+					This class will be responsible to do not write above its subdirectory.</li>
+				<li>Apply settings to attributes.</li>
+				<li>Get file content to preview file with string as output argument.</li>
+				<li>Read a settings file and return content in a pipe
+					(att1 name, att1 value, att2 name, att2 value, ...)</li>
+			</ul>
+			<table Border=0 cellpadding="10">
+				<tr>
+					<td><img src="SettingsFilesHierarchy.gif" alt=""></td>
+					<td>
+						<li>
+							For Project4, the device <b>sys/settings/project4</b>
+							will manage files found under <b>$RootPath/Project4</b></li><br>
+						<li>For Subproject2 the device <b>sys/settings/subproject2</b>
+							will manages files found under <b>$RootPath/Project1/Subproject2</b></li><br>
+						<li>The device file path is given by <b>$RootPath</b> and <b>SettingsFilesPath</b>
+							device property</li><br>
+						<li>To generate a settings file, the attribute list could be taken from
+							<b>DefaultAttributeList</b> device property or from input command argument.</li>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<br>
+            <li><b><u>How to control settings changes</u></b></li>
+            When a settings file is applied a thread is started.<br>
+            this thread read the applied attributes (write part) and
+            compare with the applied file content.<br>
+            If is different, the attribute <b>LastAppliedFile</b> is set to <b>ALARM</b><br>
+            The list of changed attributes could be found in <b>AlarmAttributes</b> attribute<br>
+            <br>
+            The default period to read attributes and compare is fixed to 2 seconds.<br>
+            But it could be changed using <b>CheckChangePeriod</b> attribute.
+
+			<br>
+			<br>
+			<b>See:</b>
+			<ul>
+				<li><a href=UsingApi.html> How to use client API</a>.</li>
+				<li><a href=doc_html/index.html> TANGO device class user's guide</a>.</li>
+				<li><a href=classes/index.html> Client/Server classes reference</a>.</li>
+			</ul>
+		</ul>
+	</ul>
+</BODY>
+</HTML>
