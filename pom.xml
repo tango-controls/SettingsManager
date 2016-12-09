@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.tango</groupId>
+    <groupId>org.tango.ds</groupId>
     <artifactId>SettingsManager</artifactId>
     <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -20,9 +21,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:tango-controls/SettingManager.git</connection>
-        <developerConnection>scm:git:git@github.com:tango-controls/SettingsManager.git</developerConnection>
-        <url>https://github.com/tango-controls/SettingsManager</url>
+        <connection>scm:git:git@github.com:tango-controls/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:tango-controls/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/tango-controls/${project.artifactId}</url>
         <tag>HEAD</tag>
     </scm>
 
