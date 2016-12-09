@@ -17,7 +17,7 @@
 #=============================================================================
 #
 #
-TANGO_HOME=$(TANGO_HOME)/release
+TANGO_JAVA=$(TANGO_HOME)/release/java
 
 #=============================================================================
 #
@@ -25,21 +25,8 @@ CLASS	   = SettingsManager
 PACKAGE = org.tango.settingsmanager
 SOURCE_FILES = src/main/java/org/tango/settingsmanager
 MAJOR_VERS   = 1
-MINOR_VERS   = 5
+MINOR_VERS   = 4
 RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
-
-#=============================================================================
-# Install
-#
-install:
-	cp target/$(CLASS)-$(RELEASE).jar $(TANGO_HOME)/java
-	cd  $(TANGO_HOME)/java;  \
-	ln -s target/$(CLASS)-$(RELEASE).jar  $(CLASS).jar
-
-OPERATION = /operation/dserver/java/servers
-install_op:
-	@segfs2operation $(JAR_DIR) $(CLASS) $(RELEASE) $(OPERATION)
-
 
 #=============================================================================
 # Generate documentation
@@ -67,7 +54,7 @@ documentation:
 
 
 
-CLP=$(TANGO_HOME)/appli/org.tango.pogo.jar
+CLP=$(TANGO_JAVA)/appli/org.tango.pogo.jar
 UPDATE_CLASS =  org.tango.pogo.pogo_gui.tools.UpdateRelease
 version:
 	@echo "-----------------------------------------"
