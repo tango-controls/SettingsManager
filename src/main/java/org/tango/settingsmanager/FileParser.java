@@ -165,7 +165,7 @@ public class FileParser {
             return strValues;
         }
         //===============================================================
-        public boolean compareSettings(Attribute attribute) throws DevFailed {
+        public String  compareSettings(Attribute attribute) throws DevFailed {
             //  Compare name
             if (!attribute.getName().equals(name))
                 Except.throw_exception("CompareError",
@@ -179,12 +179,10 @@ public class FileParser {
                 String set = attribute.get(i);
                 String applied = this.get(i);
                 if (!applied.equals(set)) {
-                    System.out.println(name +
-                            ": Apply and Read have different value\n" + applied + "!=" + set);
-                    return false;
+                    return name + ": Apply and Read have different value " + set + " ( " + applied + " expected)";
                 }
             }
-            return true;
+            return null;
         }
         //===============================================================
         public String toString() {

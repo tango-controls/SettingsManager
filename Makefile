@@ -17,7 +17,6 @@
 #=============================================================================
 #
 #
-TANGO_JAVA=$(TANGO_HOME)/release/java
 
 #=============================================================================
 #
@@ -54,6 +53,7 @@ documentation:
 
 
 
+TANGO_JAVA=$(TANGO_HOME)/release/java
 CLP=$(TANGO_JAVA)/appli/org.tango.pogo.jar
 UPDATE_CLASS =  org.tango.pogo.pogo_gui.tools.UpdateRelease
 version:
@@ -68,3 +68,7 @@ version:
 		-note_path $(SOURCE_FILES)/commons \
 		-package $(PACKAGE).commons
 		
+
+JTANGO = $(TANGO_HOME)/release/java/lib/JTango.jar
+run:
+	java -cp target/classes/:$(JTANGO) $(PACKAGE).$(CLASS) test

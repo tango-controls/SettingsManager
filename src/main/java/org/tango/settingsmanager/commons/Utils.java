@@ -93,6 +93,13 @@ public class Utils {
         Utils.defaultTimeout = defaultTimeout;
     }
     //===============================================================
+    //===============================================================
+    public static String getDisplayFileName(String fileName) {
+        if (fileName.startsWith("/")) fileName = fileName.substring(1);
+        if (fileName.endsWith(".ts")) fileName = fileName.substring(0, fileName.length()-3);
+        return fileName;
+    }
+    //===============================================================
     /**
      * SettingsTimeout is between manager and devices
      */

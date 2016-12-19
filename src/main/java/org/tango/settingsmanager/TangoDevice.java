@@ -197,9 +197,11 @@ public class TangoDevice extends ArrayList<TangoAttribute> implements TangoConst
             runningState = DevState.MOVING;
             try {
                 checkAttributeType();
-                if (mode==ICommons.APPLY)
+                if (mode==ICommons.APPLY) {
                     applySettings();
-                runningState = DevState.ON;
+                }
+                if (runningState!=DevState.ALARM)
+                    runningState = DevState.ON;
             }
             catch (DevFailed e) {
                 status = e.errors[0].desc;

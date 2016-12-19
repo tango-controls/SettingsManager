@@ -62,7 +62,4 @@ public interface ICommons {
 
     String[] actionName = { "Applying", "Generating", "Reading",
             "Listing projects", "Reading from pipe" };
-
-    boolean useChooser = (System.getenv("UseChooser")!=null && System.getenv("UseChooser").equals("true"));
-
 }

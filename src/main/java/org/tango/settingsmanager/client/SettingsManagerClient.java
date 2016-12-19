@@ -191,15 +191,10 @@ public class SettingsManagerClient {
      */
     //===============================================================
     public String  generateSettingsFile(JFrame frame, List<String> attributeList, String fileName) throws DevFailed {
-        if (ICommons.useChooser)
-            return new GenerateSettingsChooser(frame,
-                    attributeList, managerProxy, listeners).showChooser();
-        else {
-            GenerateSettingsBrowser    generateSettingsBrowser =
-                        new GenerateSettingsBrowser(frame, attributeList, managerProxy, listeners);
-            generateSettingsBrowser.setSelectedFile(fileName);
-            return generateSettingsBrowser.showChooser();
-        }
+        GenerateSettingsBrowser    generateSettingsBrowser =
+                    new GenerateSettingsBrowser(frame, attributeList, managerProxy, listeners);
+        generateSettingsBrowser.setSelectedFile(fileName);
+        return generateSettingsBrowser.showChooser();
     }
     //===============================================================
     /**

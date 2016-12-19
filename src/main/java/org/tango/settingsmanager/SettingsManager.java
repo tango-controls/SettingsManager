@@ -69,6 +69,7 @@ import org.tango.settingsmanager.commons.Utils;
 
 import java.io.File;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static org.tango.settingsmanager.commons.ICommons.OK_MESSAGE;
 
@@ -143,7 +144,7 @@ public class SettingsManager {
 	 * Device Property SettingsFilesPath
 	 * Path under the RootPath to read/write settings file.
 	 */
-	@DeviceProperty(name="SettingsFilesPath", description="Path under the RootPath to read/write settings file." )
+	@DeviceProperty(name="SettingsFilesPath", description="Path under the RootPath to read/write settings file."  )
 	private String settingsFilesPath;
 	/**
 	 * set property SettingsFilesPath
@@ -163,7 +164,7 @@ public class SettingsManager {
 	 * Default attribute list to generate settings file
 	 * if no attributes sent in WriteSettingsFile command
 	 */
-	@DeviceProperty(name="DefaultAttributeList", description="Default attribute list to generate settings file\nif no attributes sent in WriteSettingsFile command" )
+	@DeviceProperty(name="DefaultAttributeList", description="Default attribute list to generate settings file\nif no attributes sent in WriteSettingsFile command"  )
 	private String[] defaultAttributeList;
 	/**
 	 * set property DefaultAttributeList
@@ -183,7 +184,7 @@ public class SettingsManager {
 	 * timeout to write settings on specified devices in milliseconds.
 	 */
 	@DeviceProperty(name="SettingsTimeout", description="timeout to write settings on specified devices in milliseconds." ,
-	        defaultValue= { "3000" })
+	        defaultValue={ "3000" } )
 	private int settingsTimeout;
 	/**
 	 * set property SettingsTimeout
@@ -203,7 +204,7 @@ public class SettingsManager {
 	 * Add trace mode if true
 	 */
 	@DeviceProperty(name="Debug", description="Add trace mode if true" ,
-	        defaultValue= { "false" })
+	        defaultValue={ "false" } )
 	private boolean debug;
 	/**
 	 * set property Debug
@@ -222,7 +223,7 @@ public class SettingsManager {
 	 * Use attribute property format to write value in file if true.
 	 */
 	@DeviceProperty(name="UseAttributeFormat", description="Use attribute property format to write value in file if true." ,
-	        defaultValue= { "true" })
+	        defaultValue={ "true" } )
 	private boolean useAttributeFormat;
 	/**
 	 * set property UseAttributeFormat
@@ -714,6 +715,8 @@ public class SettingsManager {
 		xlogger.entry();
 		/*----- PROTECTED REGION ID(SettingsManager.generateSettingsFile) ENABLED START -----*/
 		System.out.println("GenerateSettingsFile()");
+		for (String str : generateSettingsFileIn)
+			System.out.println("  - "+str);
 
 		if (deviceList!=null)
 			deviceList.reset();
@@ -729,7 +732,11 @@ public class SettingsManager {
 			if (state==DevState.ALARM) {
 				Except.throw_exception("AppliedFailed", status);
 			}
-			lastGeneratedFile = fileGenerator.getFileName();
+			//	Set lastGeneratedFile to the input file name
+			lastGeneratedFile = Utils.getDisplayFileName(fileGenerator.getFileName());
+			//	Set lastAppliedFile to the input file name
+			//	because generated and applied are same
+			lastAppliedFile = lastGeneratedFile;
 		}
 		catch (DevFailed e) {
 			setState(DevState.ALARM);
@@ -774,7 +781,7 @@ public class SettingsManager {
 			if (state==DevState.ALARM) {
 				Except.throw_exception("AppliedFailed", status);
 			}
-			lastAppliedFile = applySettingsIn;
+			lastAppliedFile = Utils.getDisplayFileName(applySettingsIn);
 
             //  Start a thread to check if settings have changed after apply
             if (checkChangePeriod>0) {
@@ -803,8 +810,11 @@ public class SettingsManager {
 		xlogger.entry();
 		/*----- PROTECTED REGION ID(SettingsManager.reset) ENABLED START -----*/
 		
-		if (deviceList!=null && getState()==DevState.ALARM)
+		if (deviceList!=null && getState()==DevState.ALARM) {
 			deviceList.reset();
+			setState(DevState.ON);
+			setStatus(ICommons.OK_MESSAGE);
+		}
 
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.reset
 		xlogger.exit();
@@ -841,6 +851,9 @@ public class SettingsManager {
 	public void DeleteFile(String deleteFileIn) throws DevFailed {
 		xlogger.entry();
 		/*----- PROTECTED REGION ID(SettingsManager.deleteFile) ENABLED START -----*/
+		if (deleteFileIn.contains(".."))
+			Except.throw_exception("BadDirectory",
+					"Specified directory contains \"..\". Not supported ! ");
 		String fileName = Utils.settingsFile(absolutePath + '/' + deleteFileIn);
 		File file = new File(fileName);
 
@@ -867,6 +880,9 @@ public class SettingsManager {
 		/*----- PROTECTED REGION ID(SettingsManager.renameFile) ENABLED START -----*/
 		if (renameFileIn.length!=2)
 			Except.throw_exception("RenameFailed", "RenameFile needs an input argument with two file names");
+		if (renameFileIn[0].contains("..") || renameFileIn[1].contains(".."))
+			Except.throw_exception("BadDirectory",
+					"Specified directory contains \"..\". Not supported ! ");
 
 		String srcFileName = Utils.settingsFile(absolutePath + '/' + renameFileIn[0]);
 		String targetFileName = Utils.settingsFile(absolutePath + '/' + renameFileIn[1]);
@@ -887,21 +903,59 @@ public class SettingsManager {
 	/**
 	 * Execute command "GetFileList".
 	 * description: Get the file and directory list in specified path.
-	 * @param getFileListIn Path to be added to the RootPath
+	 * @param getFileListIn Path to be added to the project path
+	 *                      e.g.: ````, ``.``, ``sav``, ``old``,.....
 	 * @return FILE:  or DIR:  followed by file or directory name
 	 * @throws DevFailed if command execution failed.
 	 */
-	@Command(name="GetFileList", inTypeDesc="Path to be added to the RootPath", outTypeDesc="FILE:  or DIR:  followed by file or directory name")
+	@Command(name="GetFileList", inTypeDesc="Path to be added to the project path\ne.g.: ````, ``.``, ``sav``, ``old``,.....",
+	         outTypeDesc="FILE:  or DIR:  followed by file or directory name")
 	public String[] GetFileList(String getFileListIn) throws DevFailed {
 		xlogger.entry();
 		String[] getFileListOut;
 		/*----- PROTECTED REGION ID(SettingsManager.getFileList) ENABLED START -----*/
-		
-		getFileListOut = new BrowseFiles(rootPath+'/'+getFileListIn).toStringArray();
+		if (getFileListIn.contains(".."))
+			Except.throw_exception("BadDirectory",
+					"Specified directory contains \"..\". Not supported ! ");
+		getFileListOut = new BrowseFiles(absolutePath+'/'+getFileListIn).toStringArray();
 		
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.getFileList
 		xlogger.exit();
 		return getFileListOut;
+	}
+	
+	/**
+	 * Execute command "MakeDirectory".
+	 * description: Created the specified directory
+	 * @param makeDirectoryIn Directory name (relative to project path)
+	 * @throws DevFailed if command execution failed.
+	 */
+	@Command(name="MakeDirectory", inTypeDesc="Directory name (relative to project path)",
+	         outTypeDesc="")
+	public void MakeDirectory(String makeDirectoryIn) throws DevFailed {
+		xlogger.entry();
+		/*----- PROTECTED REGION ID(SettingsManager.makeDirectory) ENABLED START -----*/
+
+		if (makeDirectoryIn.contains(".."))
+			Except.throw_exception("BadDirectory",
+					"Specified directory contains \"..\". Not supported ! ");
+		StringTokenizer stk = new StringTokenizer(makeDirectoryIn, "/");
+		String path = absolutePath;
+		while (stk.hasMoreTokens()) {
+			String dirName = stk.nextToken();
+			path += "/" + dirName;
+			File dir = new File(path);
+			if (dir.exists() && !dir.isDirectory())
+				Except.throw_exception("BadDirectory", path + " already exists as a file");
+			if (!dir.exists()) {
+				if (!dir.mkdir()) {
+					Except.throw_exception("BadDirectory", "Cannot create: " + path);
+				}
+			}
+		}
+		
+		/*----- PROTECTED REGION END -----*/	//	SettingsManager.makeDirectory
+		xlogger.exit();
 	}
 	
 

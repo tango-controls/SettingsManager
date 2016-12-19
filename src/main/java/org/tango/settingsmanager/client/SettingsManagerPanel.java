@@ -39,6 +39,12 @@ import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.DbDatum;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
+import fr.esrf.tangoatk.core.AttributeList;
+import fr.esrf.tangoatk.core.ConnectionException;
+import fr.esrf.tangoatk.core.IDevStateScalar;
+import fr.esrf.tangoatk.core.IStringScalar;
+import fr.esrf.tangoatk.widget.attribute.StateViewer;
+import fr.esrf.tangoatk.widget.attribute.StatusViewer;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.settingsmanager.client.config.SettingsManagerConfig;
@@ -71,6 +77,7 @@ public class SettingsManagerPanel extends JFrame {
     private SettingsManagerClient settingsClient;
     private JScrollPane treeScrollPane = null;
     private FileBrowserTree fileBrowserTree = null;
+    private AttributeList attributeList = new AttributeList();
     private static final Dimension dimension = new Dimension(350, 400);
 	//=======================================================
     /**
@@ -82,16 +89,9 @@ public class SettingsManagerPanel extends JFrame {
         rootPath = getRootPath();
         if (startProject()) {
             ImageIcon tangoLogo = IconUtils.getInstance().getIcon("TangoClass.gif", 0.75);
-            if (ICommons.useChooser) {
-                //  Display only Tango logo
-                JLabel logoLabel = new JLabel();
-                logoLabel.setIcon(tangoLogo);
-                centerPanel.setLayout(new FlowLayout());
-                centerPanel.add(logoLabel);
-            }
-
             setTitle(ICommons.revNumber);
             setIconImage(tangoLogo.getImage());
+            addStateViewer();
 
             pack();
             ATKGraphicsUtils.centerFrameOnScreen(this);
@@ -101,6 +101,39 @@ public class SettingsManagerPanel extends JFrame {
 	}
 	//=======================================================
 	//=======================================================
+    private void addStateViewer() throws DevFailed {
+        try {
+            StateViewer stateViewer = new StateViewer();
+            //stateViewer.setFont(font);
+            stateViewer.setLabel("");
+            //stateViewer.setStatePreferredSize(new Dimension(60, 30));
+            //errorHistory.add(stateViewer);
+
+            IDevStateScalar attState =
+                    (IDevStateScalar) attributeList.add(managerProxy.get_name() + "/state");
+            stateViewer.setModel(attState);
+            topTopPanel.add(new JLabel("     "));
+            topTopPanel.add(stateViewer);
+            //attState.addDevStateScalarListener(this);
+
+
+            StatusViewer statusViewer = new StatusViewer();
+            IStringScalar stringScalar =
+                    (IStringScalar) attributeList.add(managerProxy.get_name() + "/status");
+            //statusViewer.setPreferredSize(new Dimension(300, 150));
+            statusViewer.setModel(stringScalar);
+            stringScalar.refresh();
+            attributeList.startRefresher();
+            viewerPanel.add(statusViewer);
+
+            attState.refresh();
+        }
+        catch (ConnectionException e) {
+            Except.throw_exception("ConnectionException", e.toString());
+        }
+    }
+    //=======================================================
+    //=======================================================
     private String  getSelectedFile() {
         String selectionType = fileBrowserTree.getSelectionType();
         if (selectionType.equalsIgnoreCase("file")) {
@@ -132,35 +165,17 @@ public class SettingsManagerPanel extends JFrame {
                 }
             });
             relativePath = getProjectPath(projectName);
-            if (ICommons.useChooser) {
-                pathLabel.setText("Settings file: " + relativePath);
+            pathLabel.setText("");
+            //  Build a JTextField to display file name
+            if (fileTextField==null) {
+                JPanel panel = new JPanel();
+                panel.add(new JLabel("File: ../"+projectName+"/"));
+                fileTextField = new JTextField(25);
+                panel.add(fileTextField);
+                centerPanel.add(panel, BorderLayout.SOUTH);
             }
-            else {
-                pathLabel.setText("");
-                //  Build a JTextField to display file name
-                if (fileTextField==null) {
-                    JPanel panel = new JPanel();
-                    panel.add(new JLabel("File: "));
-                    fileTextField = new JTextField(25);
-                    panel.add(fileTextField);
-                    centerPanel.add(panel, BorderLayout.SOUTH);
-                }
-                //  Build a JScrollPane to display files tree
-                if (treeScrollPane==null) {
-                    treeScrollPane = new JScrollPane();
-                    treeScrollPane.setPreferredSize(dimension);
-                    centerPanel.add(treeScrollPane, BorderLayout.CENTER);
-                }
-                else
-                    treeScrollPane.remove(fileBrowserTree);
-
-                //	Build users_tree to display info
-                relativePath = managerProxy.get_property("SettingsFilesPath").extractString();
-                fileBrowserTree =
-                        new FileBrowserTree(this, managerProxy, relativePath);
-                treeScrollPane.setViewportView(fileBrowserTree);
-
-            }
+            //relativePath = managerProxy.get_property("SettingsFilesPath").extractString();
+            buildFilesTree();
             return true;
         }
         else
@@ -168,7 +183,25 @@ public class SettingsManagerPanel extends JFrame {
     }
 	//=======================================================
 	//=======================================================
+    private void buildFilesTree() throws DevFailed {
+        //  Build a JScrollPane to display files tree
+        if (treeScrollPane==null) {
+            treeScrollPane = new JScrollPane();
+            treeScrollPane.setPreferredSize(dimension);
+            centerPanel.add(treeScrollPane, BorderLayout.CENTER);
+        }
+        else
+            treeScrollPane.remove(fileBrowserTree);
+
+        //	Build the files tree
+        fileBrowserTree = new FileBrowserTree(this, managerProxy);
+        treeScrollPane.setViewportView(fileBrowserTree);
+    }
+	//=======================================================
+	//=======================================================
     public void setSelectedFileInfo(String fileName) {
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         fileTextField.setText(fileName);
     }
 	//=======================================================
@@ -229,16 +262,20 @@ public class SettingsManagerPanel extends JFrame {
     private void initComponents() {
 
         javax.swing.JPanel topPanel = new javax.swing.JPanel();
+        topTopPanel = new javax.swing.JPanel();
         projectLabel = new javax.swing.JLabel();
+        viewerPanel = new javax.swing.JPanel();
         javax.swing.JPanel bottomPanel = new javax.swing.JPanel();
         pathLabel = new javax.swing.JLabel();
         centerPanel = new javax.swing.JPanel();
         javax.swing.JMenuBar menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
+        javax.swing.JMenuItem refreshItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem generateItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem applyItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
         javax.swing.JMenu viewMenu = new javax.swing.JMenu();
+        javax.swing.JMenuItem resetMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem configureItem = new javax.swing.JMenuItem();
         changeProjectItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
@@ -251,9 +288,14 @@ public class SettingsManagerPanel extends JFrame {
             }
         });
 
+        topPanel.setLayout(new java.awt.BorderLayout());
+
         projectLabel.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         projectLabel.setText("        ");
-        topPanel.add(projectLabel);
+        topTopPanel.add(projectLabel);
+
+        topPanel.add(topTopPanel, java.awt.BorderLayout.NORTH);
+        topPanel.add(viewerPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(topPanel, java.awt.BorderLayout.NORTH);
 
@@ -268,6 +310,16 @@ public class SettingsManagerPanel extends JFrame {
 
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
+
+        refreshItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        refreshItem.setMnemonic('G');
+        refreshItem.setText("Refresh");
+        refreshItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(refreshItem);
 
         generateItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         generateItem.setMnemonic('G');
@@ -303,6 +355,16 @@ public class SettingsManagerPanel extends JFrame {
 
         viewMenu.setMnemonic('T');
         viewMenu.setText("Tools");
+
+        resetMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        resetMenuItem.setMnemonic('R');
+        resetMenuItem.setText("Reset");
+        resetMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(resetMenuItem);
 
         configureItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         configureItem.setMnemonic('D');
@@ -356,21 +418,29 @@ public class SettingsManagerPanel extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //=======================================================
+    //=======================================================
+    @SuppressWarnings("UnusedParameters")
+    private void refreshItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshItemActionPerformed
+        // TODO add your handling code here:
+        try {
+            buildFilesTree();
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }//GEN-LAST:event_refreshItemActionPerformed
 	//=======================================================
 	//=======================================================
     @SuppressWarnings("UnusedParameters")
     private void generateItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateItemActionPerformed
         try {
             //  Generate settings file
-            if (ICommons.useChooser) {
-                settingsClient.generateSettingsFile(this);
-            }
-            else {
-                String fileName = fileTextField.getText(); //getSelectedFile();
-                if (fileName!=null && fileName.startsWith(relativePath + "/"))
-                    fileName = fileName.substring(relativePath.length() + 1); //	+1 for '/'
-                settingsClient.generateSettingsFile(this, null, fileName);
-            }
+            String fileName = fileTextField.getText(); //getSelectedFile();
+            if (fileName!=null && fileName.startsWith(relativePath + "/"))
+                fileName = fileName.substring(relativePath.length() + 1); //	+1 for '/'
+            settingsClient.generateSettingsFile(this, null, fileName);
+            buildFilesTree();
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, null, e);
@@ -392,22 +462,10 @@ public class SettingsManagerPanel extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void applyItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyItemActionPerformed
-        try {
-            // ToDo
-            //  apply settings file
-            if (ICommons.useChooser) {
-                settingsClient.applySettings(this);
-            } else {
-                applySettingsFile();
-            }
-        }
-        catch (DevFailed e) {
-            ErrorPane.showErrorMessage(this, e.getMessage(), e);
-        }
+        //  apply settings file
+        applySettingsFile();
     }//GEN-LAST:event_applyItemActionPerformed
     //=======================================================
-    //=======================================================
-    @SuppressWarnings("UnusedParameters")    //=======================================================
     //=======================================================
     private void settingsAppliedPerformed(SettingsManagedEvent event) {
         SplashUtils.getInstance().stopSplash();
@@ -429,14 +487,12 @@ public class SettingsManagerPanel extends JFrame {
                     ErrorPane.showErrorMessage(new JFrame(),
                             "Generated file " + fileName, event.getDevFailed());
                 } else {
-                    if (!ICommons.useChooser) {
                         try {
-                            fileBrowserTree.collapseNodes();
-                            fileBrowserTree.setSelectedFile(event.getFileName());
-                        }
-                        catch (DevFailed e) {
-                            ErrorPane.showErrorMessage(this, null, e);
-                        }
+                        fileBrowserTree.collapseNodes();
+                        fileBrowserTree.setSelectedFile(event.getFileName());
+                    }
+                    catch (DevFailed e) {
+                        ErrorPane.showErrorMessage(this, null, e);
                     }
                     JOptionPane.showMessageDialog(new JFrame(),
                             "Settings saved in  " + event.getFileName());
@@ -489,13 +545,24 @@ public class SettingsManagerPanel extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }//GEN-LAST:event_changeProjectItemActionPerformed
-
     //=======================================================
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void releaseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_releaseMenuItemActionPerformed
         new PopupHtml(this).show(ReleaseNote.str);
     }//GEN-LAST:event_releaseMenuItemActionPerformed
+    //=======================================================
+    //=======================================================
+    @SuppressWarnings("UnusedParameters")
+    private void resetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetMenuItemActionPerformed
+        // TODO add your handling code here:
+        try {
+            managerProxy.command_inout("Reset");
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }//GEN-LAST:event_resetMenuItemActionPerformed
     //=======================================================
 	//=======================================================
     private void doClose() {
@@ -523,6 +590,8 @@ public class SettingsManagerPanel extends JFrame {
     private javax.swing.JMenuItem changeProjectItem;
     private javax.swing.JLabel pathLabel;
     private javax.swing.JLabel projectLabel;
+    private javax.swing.JPanel topTopPanel;
+    private javax.swing.JPanel viewerPanel;
     // End of variables declaration//GEN-END:variables
 	//=======================================================
 

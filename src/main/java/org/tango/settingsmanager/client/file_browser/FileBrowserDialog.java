@@ -42,7 +42,6 @@ import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.settingsmanager.commons.ICommons;
-import org.tango.settingsmanager.commons.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +49,7 @@ import java.awt.*;
 
 //===============================================================
 /**
- *	JDialog Class to display info
+ *	JDialog Class to browse remote directories and files.
  *
  *	@author  Pascal Verdier
  */
@@ -62,7 +61,7 @@ public class FileBrowserDialog extends JDialog {
 	private Component	parent;
 	private String relativePath;
     private DeviceProxy managerProxy;
-	private FileBrowserTree fileBrowserTree;
+	protected FileBrowserTree fileBrowserTree;
 	private int returnValue = JOptionPane.OK_OPTION;
 	private static final Dimension dimension = new Dimension(400, 400);
 	//===============================================================
@@ -113,12 +112,19 @@ public class FileBrowserDialog extends JDialog {
 		titleLabel.setText("Settings Manager File Browser");
 
 		//	Build users_tree to display info
-		fileBrowserTree = new FileBrowserTree(this, managerProxy, rootPath);
+		fileBrowserTree = new FileBrowserTree(this, managerProxy);
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(fileBrowserTree);
 		scrollPane.setPreferredSize(dimension);
         contentScrollPane.setPreferredSize(dimension);
         centerPanel.add(scrollPane, BorderLayout.WEST);
+
+        //	Get last member of relative path to display
+		int index = relativePath.lastIndexOf('/', relativePath.length()-2);
+		if (index<0)
+    		fileNameLabel.setText("File  ../"+relativePath + '/'); // path without '/'
+		else
+	    	fileNameLabel.setText("File  ../"+relativePath.substring(index) + '/');
 
 		pack();
 		ATKGraphicsUtils.centerDialog(this);
@@ -132,6 +138,8 @@ public class FileBrowserDialog extends JDialog {
 	//===============================================================
 	//===============================================================
     public void setSelectedFileInfo(String fileName) {
+	    if (fileName.startsWith("/"))
+	        fileName = fileName.substring(1);
         fileTextField.setText(fileName);
 
         if (contentScrollPane.isVisible()) {
@@ -185,15 +193,15 @@ public class FileBrowserDialog extends JDialog {
 
         javax.swing.JPanel topPanel = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
-        javax.swing.JPanel bottomPanel = new javax.swing.JPanel();
-        okBtn = new javax.swing.JButton();
-        javax.swing.JButton cancelBtn = new javax.swing.JButton();
         centerPanel = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        fileNameLabel = new javax.swing.JLabel();
         fileTextField = new javax.swing.JTextField();
         contentScrollPane = new javax.swing.JScrollPane();
         contentTextArea = new javax.swing.JTextArea();
+        javax.swing.JPanel bottomPanel = new javax.swing.JPanel();
+        applyBtn = new javax.swing.JButton();
+        javax.swing.JButton cancelBtn = new javax.swing.JButton();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -207,28 +215,10 @@ public class FileBrowserDialog extends JDialog {
 
         getContentPane().add(topPanel, java.awt.BorderLayout.NORTH);
 
-        okBtn.setText("Apply");
-        okBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okBtnActionPerformed(evt);
-            }
-        });
-        bottomPanel.add(okBtn);
-
-        cancelBtn.setText("Cancel");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
-            }
-        });
-        bottomPanel.add(cancelBtn);
-
-        getContentPane().add(bottomPanel, java.awt.BorderLayout.SOUTH);
-
         centerPanel.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("File name: ");
-        jPanel1.add(jLabel1);
+        fileNameLabel.setText("File name: ");
+        jPanel1.add(fileNameLabel);
 
         fileTextField.setColumns(35);
         fileTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -248,6 +238,24 @@ public class FileBrowserDialog extends JDialog {
 
         getContentPane().add(centerPanel, java.awt.BorderLayout.CENTER);
 
+        applyBtn.setText("Apply");
+        applyBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyBtnActionPerformed(evt);
+            }
+        });
+        bottomPanel.add(applyBtn);
+
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelBtnActionPerformed(evt);
+            }
+        });
+        bottomPanel.add(cancelBtn);
+
+        getContentPane().add(bottomPanel, java.awt.BorderLayout.SOUTH);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -256,6 +264,8 @@ public class FileBrowserDialog extends JDialog {
 	private String selectedFile = "";
 	void manageSelection() {
 		String str = fileTextField.getText();
+        if (str.startsWith("/"))
+            str = str.substring(1);
 		if (!str.isEmpty() && !str.endsWith("/")) {
 			selectedFile = str;
 			if (selectedFile.startsWith(relativePath+"/"))
@@ -269,9 +279,9 @@ public class FileBrowserDialog extends JDialog {
 	//===============================================================
 	//===============================================================
     @SuppressWarnings("UnusedParameters")
-	private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
+	private void applyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyBtnActionPerformed
 		manageSelection();
-	}//GEN-LAST:event_okBtnActionPerformed
+	}//GEN-LAST:event_applyBtnActionPerformed
 	//===============================================================
 	//===============================================================
 	@SuppressWarnings("UnusedParameters")
@@ -310,7 +320,7 @@ public class FileBrowserDialog extends JDialog {
 	//===============================================================
 	//===============================================================
 	public void setApproveButtonText(String text) {
-		okBtn.setText(text);
+		applyBtn.setText(text);
 	}
 	//===============================================================
 	//===============================================================
@@ -326,11 +336,12 @@ public class FileBrowserDialog extends JDialog {
 
 	//===============================================================
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton applyBtn;
     private javax.swing.JPanel centerPanel;
     private javax.swing.JScrollPane contentScrollPane;
     private javax.swing.JTextArea contentTextArea;
+    private javax.swing.JLabel fileNameLabel;
     private javax.swing.JTextField fileTextField;
-    private javax.swing.JButton okBtn;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 	//===============================================================

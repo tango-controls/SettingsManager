@@ -37,36 +37,23 @@ package org.tango.settingsmanager.client;
 
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
-import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.settingsmanager.client.file_browser.FileBrowserDialog;
-import org.tango.settingsmanager.commons.ICommons;
 import org.tango.settingsmanager.commons.PipeToString;
 import org.tango.settingsmanager.commons.Utils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
-
-//===============================================================
 /**
  *	JDialog Class to display a file content after selection
  *
  *	@author  Pascal Verdier
  */
-//===============================================================
-
-
 @SuppressWarnings("MagicConstant")
 public class ViewSettingsDialog extends JDialog {
-	private String settingsPath;
-	private boolean apply;
 	private String  selectedFile = null;
-	private static final SettingsFileFilter settingsFileFilter =
-			new SettingsFileFilter(ICommons.extension, "Settings files");
-
 	private static final Dimension maxDimension = new Dimension(600, 800);
 	//===============================================================
 	/**
@@ -77,10 +64,6 @@ public class ViewSettingsDialog extends JDialog {
 		super(parent, true);
 		initComponents();
 		applyBtn.setVisible(false);
-		this.apply = false;
-
-		//	Get the settings path from manager device
-		settingsPath = Utils.getSettingsPath(managerProxy);
 
 		//  Select file name
 		String fileName = selectFile(managerProxy);
@@ -114,6 +97,7 @@ public class ViewSettingsDialog extends JDialog {
 	 *	Creates new form ViewSettingsDialog
 	 */
 	//===============================================================
+	@SuppressWarnings("unused")
 	public ViewSettingsDialog(JFrame parent, DeviceProxy managerProxy, boolean apply) throws DevFailed {
 		this(parent, managerProxy, apply, null);
 	}
@@ -123,10 +107,6 @@ public class ViewSettingsDialog extends JDialog {
 		super(parent, true);
 		initComponents();
 		applyBtn.setVisible(apply);
-		this.apply = apply;
-
-		//	Get the settings path from manager device
-		settingsPath = Utils.getSettingsPath(managerProxy);
 
 		//  Select file name
 		if (fileName==null)
@@ -135,11 +115,9 @@ public class ViewSettingsDialog extends JDialog {
 			// Display file name then read and display file content
 			titleLabel.setText("File: " + fileName);
 			String content;
-			if (ICommons.useChooser)
-				content = Utils.readFile(settingsPath + '/' + fileName);
-			else
-				content = getFileContent(managerProxy, fileName);
+			content = getFileContent(managerProxy, fileName);
 			contentTextArea.setText(content);
+
 			//	resize text area
 			contentScrollPane.setPreferredSize(
 					Utils.getTextDimension(contentTextArea, maxDimension));
@@ -163,41 +141,16 @@ public class ViewSettingsDialog extends JDialog {
 	//===============================================================
 	//===============================================================
 	private String  selectFile(DeviceProxy managerProxy) throws DevFailed {
-		if (ICommons.useChooser) {
-			JFileChooser fileChooser = new JFileChooser(settingsPath);
-			fileChooser.setFileFilter(settingsFileFilter);
-			if (apply)
-				fileChooser.setApproveButtonText("Load Settings");
-			else
-				fileChooser.setApproveButtonText("Read");
-			if (fileChooser.showOpenDialog(new JFrame())==JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				if (file!=null) {
-					if (!file.isDirectory()) {
-						//  Check path with settingsPath
-						String absolutePath = Utils.getLinuxPath(file.getAbsolutePath());
-						if (!absolutePath.startsWith(settingsPath))
-							Except.throw_exception("BadPath",
-									"Path " + absolutePath + " is out of settings directory");
-
-						//  return name from root dir
-						return absolutePath.substring(settingsPath.length() + 1); // +1 for last '/'
-					}
-				}
+		try {
+			DbDatum datum = managerProxy.get_property("SettingsFilesPath");
+			FileBrowserDialog dialog =
+					new FileBrowserDialog(this, managerProxy, datum.extractString());
+			dialog.setApproveButtonText("Apply");
+			if (dialog.showDialog()==JOptionPane.OK_OPTION) {
+				return dialog.getSelectedFile();
 			}
-		}
-		else {
-			try {
-				DbDatum datum = managerProxy.get_property("SettingsFilesPath");
-				FileBrowserDialog dialog =
-						new FileBrowserDialog(this, managerProxy, datum.extractString());
-				dialog.setApproveButtonText("Apply");
-				if (dialog.showDialog()==JOptionPane.OK_OPTION) {
-					return dialog.getSelectedFile();
-				}
-			} catch (DevFailed e) {
-				ErrorPane.showErrorMessage(this, null, e);
-			}
+		} catch (DevFailed e) {
+			ErrorPane.showErrorMessage(this, null, e);
 		}
 		return null;
 	}

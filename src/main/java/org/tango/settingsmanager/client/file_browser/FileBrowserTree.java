@@ -53,6 +53,8 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +73,14 @@ public class FileBrowserTree extends JTree implements TangoConst {
     private String rootPath;
     private String relativePath;
 
+    private GenerateFilePopupMenu popupMenu;    //  used to create dir when generate
     //===============================================================
     //===============================================================
-    public FileBrowserTree(Component parent, DeviceProxy managerProxy, String relativePath) throws
-            DevFailed {
+    public FileBrowserTree(Component parent, DeviceProxy managerProxy) throws DevFailed {
         super();
         this.parent = parent;
         this.managerProxy = managerProxy;
-        this.relativePath = relativePath;
+        this.relativePath = "";
 
         //  Get the full root relativePath
         DeviceAttribute attribute = managerProxy.read_attribute("SettingsPath");
@@ -89,6 +91,8 @@ public class FileBrowserTree extends JTree implements TangoConst {
         //  Build the tree
         buildTree(relativePath);
         setSelectionPath(null);
+        popupMenu = new GenerateFilePopupMenu(this);
+
     }
     //===============================================================
     //===============================================================
@@ -156,20 +160,12 @@ public class FileBrowserTree extends JTree implements TangoConst {
                 }
             }
         }
-        /*
         else if ((mask & MouseEvent.BUTTON3_MASK)!=0) {
-            fileTextField.setText("");
             if (node==root)
-                menu.showMenu(evt, (String) userObject);
-            else if (userObject instanceof BrowsedDirectory)
-                menu.showMenu(evt, (BrowsedDirectory) userObject);
-            else
-            if (userObject instanceof BrowsedFile) {
-                fileTextField.setText(userObject.toString());
-                //menu.showMenu(evt, (BrowsedFile) userObject);
-            }
+                popupMenu.showMenu(evt, root.toString());
+            if (userObject instanceof BrowsedDirectory)
+                popupMenu.showMenu(evt, ((BrowsedDirectory)userObject).path);
         }
-        */
     }
     //===============================================================
     //===============================================================
@@ -218,7 +214,7 @@ public class FileBrowserTree extends JTree implements TangoConst {
             while (stk.hasMoreTokens())
                 items.add(stk.nextToken());
 
-            //	ToDo Set selection for specified path
+            //	Set selection for specified path
             List<DefaultMutableTreeNode> nodeList = new ArrayList<>();
             nodeList.add(root);
             DefaultMutableTreeNode node = root;
@@ -342,32 +338,34 @@ public class FileBrowserTree extends JTree implements TangoConst {
         else
             return "Selection is unknown type";
     }
-    //======================================================
-    //======================================================
-     /*
-   public String getSelectedFile() {
-        DefaultMutableTreeNode node = getSelectedNode();
-        if (node==null)
-            return null;
-        Object object = node.getUserObject();
-        if (object instanceof BrowsedFile) {
-            Object[] treePath = node.getUserObjectPath();
-            StringBuilder sb = new StringBuilder();
-            for (int i=0 ; i<treePath.length ; i++) {
-                if (i>0) {   //  does not return rootPath
-                    sb.append(treePath[i].toString());
-                    if (i<treePath.length - 1)
-                        sb.append('/');
+    //===============================================================
+    //===============================================================
+    private void createNewDirectory() {
+        //  ToDo Get path to create the directory
+        Object userObject = getSelectedNode().getUserObject();
+        if (userObject instanceof BrowsedDirectory) {
+            BrowsedDirectory browsedDirectory = (BrowsedDirectory) userObject;
+            System.out.println(browsedDirectory.path);
+
+            String newDirectory = JOptionPane.showInputDialog(this,
+                    "Create directory:   "+browsedDirectory.path + "/",
+                    "New directory", JOptionPane.QUESTION_MESSAGE);
+            try {
+                if (newDirectory != null) {
+                    DeviceData argIn = new DeviceData();
+                    argIn.insert(browsedDirectory.path+newDirectory);
+                    managerProxy.command_inout("MakeDirectory", argIn);
                 }
             }
-            return sb.toString();
+            catch (DevFailed e) {
+                ErrorPane.showErrorMessage(this, null, e);
+            }
         }
-        else
-            return null;
     }
-    */
     //===============================================================
     //===============================================================
+
+
 
 
     //===============================================================
@@ -385,10 +383,9 @@ public class FileBrowserTree extends JTree implements TangoConst {
             else
                 Except.throw_exception("BadName", name + " is not a file name");
             //  Build full name
-            if (path.endsWith("/"))
-                fullName = path + this.name;
-            else
-                fullName = path + '/' + this.name;
+            if (!path.endsWith("/"))
+                path += '/';
+            fullName = path + this.name;
         }
         //===========================================================
         public String toString() {
@@ -411,7 +408,9 @@ public class FileBrowserTree extends JTree implements TangoConst {
                 this.name = name.substring(ICommons.DIR_HEADER.length());
             else
                 Except.throw_exception("BadName", name + " is not a directory name");
-            this.path = path+'/'+this.name+'/';
+            if (!path.endsWith("/"))
+                path += '/';
+            this.path = path + this.name+'/';
         }
         //===========================================================
         public String toString() {
@@ -514,4 +513,84 @@ public class FileBrowserTree extends JTree implements TangoConst {
     }//	End of Renderer Class
     //==============================================================================
     //==============================================================================
+
+
+
+
+
+
+
+
+
+    //==============================================================================
+    //==============================================================================
+    private static final int CREATE_DIRECTORY = 0;
+    private static final int OFFSET = 2;    //	Label And separator
+
+    private static String[] menuLabels = {
+            "Create a directory",
+    };
+    private class GenerateFilePopupMenu extends JPopupMenu {
+        private JLabel title;
+        private JTree tree;
+        //======================================================
+        private GenerateFilePopupMenu(JTree tree) {
+            this.tree = tree;
+            title = new JLabel();
+            title.setFont(new java.awt.Font("Dialog", Font.BOLD, 16));
+            add(title);
+            add(new JPopupMenu.Separator());
+
+            for (String menuLabel : menuLabels) {
+                if (menuLabel == null)
+                    add(new Separator());
+                else {
+                    JMenuItem btn = new JMenuItem(menuLabel);
+                    btn.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            hostActionPerformed(evt);
+                        }
+                    });
+                    add(btn);
+                }
+            }
+        }
+
+        //======================================================
+        private void showMenu(MouseEvent evt, String directoryName) {
+            //	Set selection at mouse position
+            TreePath selectedPath =
+                    tree.getPathForLocation(evt.getX(), evt.getY());
+            if (selectedPath == null)
+                return;
+            tree.setSelectionPath(selectedPath);
+
+            title.setText(directoryName);
+
+            //	Reset all items
+            for (int i = 0; i < menuLabels.length; i++)
+                getComponent(OFFSET + i).setVisible(false);
+
+            getComponent(OFFSET ).setVisible(true);
+            show(tree, evt.getX(), evt.getY());
+        }
+
+        //======================================================
+        private void hostActionPerformed(ActionEvent evt) {
+            //	Check component source
+            Object obj = evt.getSource();
+            int itemIndex = 0;
+            for (int i = 0; i < menuLabels.length; i++)
+                if (getComponent(OFFSET + i) == obj)
+                    itemIndex = i;
+
+            switch (itemIndex) {
+                case CREATE_DIRECTORY:
+                    createNewDirectory();
+                    break;
+            }
+        }
+    }
+    //============================================================
+    //============================================================
 }

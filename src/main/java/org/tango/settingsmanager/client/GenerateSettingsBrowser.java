@@ -72,7 +72,6 @@ public class GenerateSettingsBrowser extends FileBrowserDialog {
 
     private DevFailed devFailed;
     private boolean isStandAlone;
-
 	//===============================================================
 	/**
 	 *	Creates new form InputSettingsParameters
@@ -188,6 +187,8 @@ public class GenerateSettingsBrowser extends FileBrowserDialog {
                                             List<String> attributeList,
                                             DeviceProxy managerProxy)throws DevFailed {
         List<String> list = new ArrayList<>();
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         list.add("File: " + fileName);
         if (author!=null)
             list.add("Author: " + author);
@@ -210,6 +211,8 @@ public class GenerateSettingsBrowser extends FileBrowserDialog {
 
         //  Build the input arguments
         List<String> list = new ArrayList<>();
+        if (fileName.startsWith("/"))
+            fileName = fileName.substring(1);
         list.add("File: " + fileName);
         if (!authorTextField.getText().isEmpty())
             list.add("Author: " + authorTextField.getText());

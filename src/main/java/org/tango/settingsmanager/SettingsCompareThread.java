@@ -163,11 +163,22 @@ public class SettingsCompareThread extends Thread {
     }
     //===============================================================
     //===============================================================
+    private boolean done = false;
     private List<String> compareSettings(List<FileParser.Attribute> settings) throws DevFailed {
-        if (settings.size() != appliedAttributes.size())
+        if (settings.size() != appliedAttributes.size()) {
+            if (!done) {
+                for (int i=0 ; i<settings.size() ; i++)
+                    System.out.println(i+": " + settings.get(i).getName());
+                System.out.println("---------------------------------------------------");
+                for (int i=0 ; i<appliedAttributes.size() ; i++)
+                    System.out.println(i+": " + appliedAttributes.get(i).getName());
+                done = true;
+            }
             Except.throw_exception("CompareError",
                     "Apply and Read have different size\nAttributes could be badly initialized (?)");
+        }
         List<String> alarmAttributes = new ArrayList<>();
+        errorMessage = "";
         for (FileParser.Attribute appliedAttribute : appliedAttributes) {
             FileParser.Attribute settingsAttribute = null;
             for (FileParser.Attribute attribute : settings) {
@@ -177,15 +188,18 @@ public class SettingsCompareThread extends Thread {
             }
             if (settingsAttribute==null)
                 Except.throw_exception("CompareError", "Attribute " +appliedAttribute + " not found in settings");
-            if (!appliedAttribute.compareSettings(settingsAttribute))
+            String str;
+            if ((str=appliedAttribute.compareSettings(settingsAttribute))!=null) {
                 alarmAttributes.add(appliedAttribute.getName());
+                errorMessage += str+"\n";
+            }
         }
         return alarmAttributes;
     }
     //===============================================================
     //===============================================================
     public boolean isAlarm() {
-        return errorMessage!=null || !alarmAttributes.isEmpty();
+        return errorMessage!=null && !alarmAttributes.isEmpty();
     }
     //===============================================================
     //===============================================================
