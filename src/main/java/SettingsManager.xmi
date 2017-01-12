@@ -41,14 +41,14 @@
       </argout>
       <status abstract="true" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Status" description="This command gets the device status (stored in its device_status data member) and returns it to the caller." execMethod="dev_status" displayLevel="OPERATOR" polledPeriod="0">
+    <commands name="Status" description="This command gets the device status (stored in its device_status data member) and returns it to the caller." execMethod="dev_status" displayLevel="OPERATOR" polledPeriod="1000" isDynamic="false">
       <argin description="none">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
       <argout description="Device status">
         <type xsi:type="pogoDsl:ConstStringType"/>
       </argout>
-      <status abstract="true" inherited="true" concrete="true"/>
+      <status abstract="true" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
     <commands name="GetSettingsFileContent" description="read the specified file content" execMethod="get_settings_file_content" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="Specified file name.">
@@ -191,6 +191,6 @@
     <states name="ALARM" description="The device has applied settings, but at least one attribute apply has failed.&#xA;Or Settings have been applied but changed by someone.">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </states>
-    <preferences docHome="./doc_html" makefileHome="/segfs/tango/cppserver/env"/>
+    <preferences docHome="./doc_html" makefileHome="$(TANGO_HOME)"/>
   </classes>
 </pogoDsl:PogoSystem>

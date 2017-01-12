@@ -16,7 +16,9 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 09-12-2016  09:08:47)</center><br>\n" + 
+		"	(Generated 12-01-2017  15:42:55)</center><br>\n" + 
+		"<li><b>SettingManager-1.6 - 12/01/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Force polling for State and Status.<br>" + 
 		"<li><b>SettingManager-1.5 - 09/12/16:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Moved to git and adapted to maven<br>" + 
 		"<li><b>SettingManager-1.4 - 14/09/16:</b><br>" + 

@@ -627,7 +627,7 @@ public class SettingsManager {
 	/**
 	 * The state of the device
 	*/
-	@State
+	@State (isPolled=true, pollingPeriod=1000)
 	private DevState state = DevState.UNKNOWN;
 	/**
 	 * Execute command "State".
@@ -653,7 +653,7 @@ public class SettingsManager {
 	/**
 	 * The status of the device
 	 */
-	@Status
+	@Status (isPolled=true, pollingPeriod=1000)
 	private String status = "Server is starting. The device state is unknown";
 	/**
 	 * Execute command "Status".
