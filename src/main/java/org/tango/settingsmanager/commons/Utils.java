@@ -158,6 +158,9 @@ public class Utils {
     //===============================================================
     //===============================================================
     public static String getSettingsRootPath() throws DevFailed {
+        String debug = System.getenv("DebugRootPath");
+        if (debug!=null && !debug.isEmpty())
+            return debug;
         DbDatum datum = new DbClass("SettingsManager").get_property("RootPath");
         if (datum.is_empty())
             Except.throw_exception("PropertyNotSet", "Class property RootPath is not set");

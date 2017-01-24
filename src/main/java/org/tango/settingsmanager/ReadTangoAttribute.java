@@ -165,13 +165,11 @@ public class ReadTangoAttribute extends TangoAttribute implements TangoConst {
         int x = 0;
         for (int i=nbRead ; i<values.length ; i++) {
             //  Check if value must be formatted
-            sb.append(values[i]);
-            /*
             if (format==null)
                 sb.append(values[i]);
             else
                 sb.append(String.format(format, values[i]));
-            */
+
             //  Check if image
             if (++x==dimX && dimY>1) {
                 if (i<values.length-1) { // not the last one

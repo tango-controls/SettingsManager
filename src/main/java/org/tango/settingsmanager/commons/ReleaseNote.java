@@ -16,7 +16,10 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 12-01-2017  15:42:55)</center><br>\n" + 
+		"	(Generated 24-01-2017  09:40:07)</center><br>\n" + 
+		"<li><b>SettingManager-1.7 - 24/01/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix a bug in settings format.<br>" + 
+		"&nbsp; &nbsp; &nbsp; Add a DebugRootPath environment variable.<br>" + 
 		"<li><b>SettingManager-1.6 - 12/01/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Force polling for State and Status.<br>" + 
 		"<li><b>SettingManager-1.5 - 09/12/16:</b><br>" + 

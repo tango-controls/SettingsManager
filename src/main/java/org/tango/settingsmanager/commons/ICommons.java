@@ -41,7 +41,7 @@ package org.tango.settingsmanager.commons;
 
 public interface ICommons {
     public static final String revNumber =
-            "1.6  -  12-01-2017  15:42:55";
+            "1.7  -  24-01-2017  09:40:07";
     String className = "SettingsManager";
     String extension = "ts";
     String identifier = "#  TANGO " + className + " file";
