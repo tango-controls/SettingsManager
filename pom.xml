@@ -4,7 +4,7 @@
 
     <groupId>org.tango.ds</groupId>
     <artifactId>SettingsManager</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
     <packaging>jar</packaging>
 
     <name>SettingsManager Tango server</name>
@@ -24,7 +24,7 @@
         <connection>scm:git:git@github.com:tango-controls/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:tango-controls/${project.artifactId}.git</developerConnection>
         <url>https://github.com/tango-controls/${project.artifactId}</url>
-        <tag>HEAD</tag>
+        <tag>SettingsManager-1.7</tag>
     </scm>
 
     <distributionManagement>
