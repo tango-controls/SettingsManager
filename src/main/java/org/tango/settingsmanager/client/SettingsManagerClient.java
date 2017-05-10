@@ -204,7 +204,8 @@ public class SettingsManagerClient {
     //===============================================================
     public String  generateSettingsFile(JFrame frame, List<String> attributeList, String fileName) throws DevFailed {
         GenerateSettingsBrowser    generateSettingsBrowser =
-                    new GenerateSettingsBrowser(frame, attributeList, managerProxy, listeners);
+                    new GenerateSettingsBrowser(frame,
+                            attributeList, managerProxy, listeners, dialogTitle, approveButtonText);
         generateSettingsBrowser.setSelectedFile(fileName);
         return generateSettingsBrowser.showChooser();
     }

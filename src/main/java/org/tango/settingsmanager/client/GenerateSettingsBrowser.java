@@ -80,12 +80,18 @@ public class GenerateSettingsBrowser extends FileBrowserDialog {
 	public GenerateSettingsBrowser(JFrame parent,
                                    List<String> attributeList,
                                    DeviceProxy managerProxy,
-                                   List<SettingsManagedListener> listenerList) throws DevFailed {
+                                   List<SettingsManagedListener> listenerList,
+                                   String dialogTitle,
+                                   String approveButtonText) throws DevFailed {
 		super(parent, managerProxy);
         this.attributeList = attributeList;
         this.managerProxy = managerProxy;
         this.listenerList = listenerList;
-        setApproveButtonText("Save Settings");
+        setTitle(dialogTitle);
+        if (approveButtonText==null)
+            setApproveButtonText("Save Settings");
+        else
+            setApproveButtonText(approveButtonText);
 
         //  Build additional panel
         add(buildParametersPanel(), BorderLayout.EAST);
