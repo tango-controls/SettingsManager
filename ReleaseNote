@@ -17,9 +17,11 @@
 
 
 
+SettingManager-1.9 - 10/05/17:
+	Add some methods to customize file browser.
+
 SettingManager-1.8 - 10/05/17:
 	Fix a problem with java1.8 to display very long line.
-	Add some methods to customize file browser.
 
 SettingManager-1.7 - 24/01/17:
 	Fix a bug in settings format.

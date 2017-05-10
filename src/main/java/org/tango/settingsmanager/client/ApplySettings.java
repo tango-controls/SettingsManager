@@ -69,12 +69,15 @@ public class ApplySettings {
 	 */
 	//===============================================================
 	public ApplySettings(JFrame parent, DeviceProxy managerProxy,
-						 List<SettingsManagedListener> listenerList, String fileName) throws DevFailed {
+						 List<SettingsManagedListener> listenerList,
+						 String fileName, String title,
+						 String approveButtonText) throws DevFailed {
 		this.managerProxy = managerProxy;
 		this.listenerList = listenerList;
 
 		//	And select file
-		ViewSettingsDialog dialog = new ViewSettingsDialog(parent, managerProxy, true, fileName);
+		ViewSettingsDialog dialog = new ViewSettingsDialog(parent,
+                managerProxy, true, fileName, title, approveButtonText);
 		this.fileName = dialog.showDialog();
 
 		//	Check if stand alone or from another application

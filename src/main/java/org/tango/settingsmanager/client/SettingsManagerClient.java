@@ -55,6 +55,8 @@ import java.util.List;
 public class SettingsManagerClient {
     private DeviceProxy managerProxy;
     private List<SettingsManagedListener> listeners = new ArrayList<>();
+    private String dialogTitle = null;
+    private String approveButtonText=null;
 
     public static final int APPLIED   = ICommons.APPLY;
     public static final int GENERATED = ICommons.GENERATE;
@@ -69,6 +71,16 @@ public class SettingsManagerClient {
         if (!settingsDeviceName.contains("/"))
             settingsDeviceName = ICommons.deviceHeader + settingsDeviceName;
         managerProxy = new DeviceProxy(settingsDeviceName);
+    }
+    //===============================================================
+    //===============================================================
+    public void setApproveButtonText(String text) {
+        approveButtonText = text;
+    }
+    //===============================================================
+    //===============================================================
+    public void setDialogTitle(String text) {
+        this.dialogTitle = text;
     }
     //===============================================================
     /**
@@ -228,7 +240,10 @@ public class SettingsManagerClient {
      */
     //===============================================================
     public String readSettingsFileFromPipe(JFrame frame) throws DevFailed {
-        return new ViewSettingsDialog(frame, managerProxy, ICommons.ContentPipeName).showDialog();
+        ViewSettingsDialog dialog = new ViewSettingsDialog(frame, managerProxy, ICommons.ContentPipeName);
+        if (dialogTitle!=null) dialog.setTitle(dialogTitle);
+        if (approveButtonText!=null) dialog.setApproveButtonText(approveButtonText);
+        return dialog.showDialog();
     }
     //===============================================================
     /**
@@ -251,7 +266,11 @@ public class SettingsManagerClient {
      */
     //===============================================================
     public String viewSettingsFile(JFrame frame, String fileName) throws DevFailed {
-        return new ViewSettingsDialog(frame, managerProxy, false, fileName).showDialog();
+        ViewSettingsDialog dialog =  new ViewSettingsDialog(frame,
+                managerProxy, false, fileName, dialogTitle, approveButtonText);
+        if (dialogTitle!=null) dialog.setTitle(dialogTitle);
+        if (approveButtonText!=null) dialog.setApproveButtonText(approveButtonText);
+        return dialog.showDialog();
     }
     //===============================================================
     /**
@@ -274,7 +293,8 @@ public class SettingsManagerClient {
      */
     //===============================================================
     public String applySettings(JFrame frame, String fileName) throws DevFailed {
-        return new ApplySettings(frame, managerProxy, listeners, fileName).apply();
+        return new ApplySettings(frame,
+                managerProxy, listeners, fileName, dialogTitle, approveButtonText).apply();
     }
     //===============================================================
     /**
@@ -369,6 +389,8 @@ public class SettingsManagerClient {
         String selectedFile = null;
         try {
             final SettingsManagerClient client = new SettingsManagerClient(settingsDeviceName);
+            client.setDialogTitle("BlaBla");
+            client.setApproveButtonText("Action");
             client.addSettingsAppliedListener(new SettingsManagedListener() {
                 @Override
                 public void settingsManaged(SettingsManagedEvent e) {

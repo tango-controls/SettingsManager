@@ -63,7 +63,6 @@ public class FileBrowserDialog extends JDialog {
 	private String relativePath;
     private DeviceProxy managerProxy;
 	protected FileBrowserTree fileBrowserTree;
-	private String approveButtonText = "View";
 	private int returnValue = JOptionPane.OK_OPTION;
 	private static final Dimension dimension = new Dimension(400, 400);
 	//===============================================================

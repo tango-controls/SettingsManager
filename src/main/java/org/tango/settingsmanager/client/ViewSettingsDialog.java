@@ -55,6 +55,7 @@ import java.awt.*;
 public class ViewSettingsDialog extends JDialog {
 	private String  selectedFile = null;
     private String approveButtonText = "View";
+    private String title = null;
 	private static final Dimension maxDimension = new Dimension(600, 800);
 	//===============================================================
 	/**
@@ -100,15 +101,20 @@ public class ViewSettingsDialog extends JDialog {
 	//===============================================================
 	@SuppressWarnings("unused")
 	public ViewSettingsDialog(JFrame parent, DeviceProxy managerProxy, boolean apply) throws DevFailed {
-		this(parent, managerProxy, apply, null);
+		this(parent, managerProxy, apply, null, null, null);
 	}
 	//===============================================================
 	//===============================================================
-	public ViewSettingsDialog(JFrame parent, DeviceProxy managerProxy, boolean apply, String fileName)
-			throws DevFailed {
+	public ViewSettingsDialog(JFrame parent,
+							  DeviceProxy managerProxy,
+							  boolean apply, String fileName,
+							  String title, String approveButtonText) throws DevFailed {
 		super(parent, true);
 		initComponents();
 		applyBtn.setVisible(apply);
+		this.title = title;
+		if (approveButtonText!=null)
+			this.approveButtonText = approveButtonText;
 
 		//  Select file name
 		if (fileName==null)
@@ -148,6 +154,10 @@ public class ViewSettingsDialog extends JDialog {
 			FileBrowserDialog dialog =
 					new FileBrowserDialog(this, managerProxy, datum.extractString());
 			dialog.setApproveButtonText(approveButtonText);
+			if (title!=null) {
+			    dialog.setTitle(title);
+                dialog.setDialogTitle(title);
+            }
 			if (dialog.showDialog()==JOptionPane.OK_OPTION) {
 				return dialog.getSelectedFile();
 			}
