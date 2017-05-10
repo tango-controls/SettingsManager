@@ -329,5 +329,30 @@ public class Utils {
         return fileName;
     }
     //===============================================================
+	/*
+	 * Due to bug with java 1.8, we cannot display too long lines
+	 */
+    //===============================================================
+    private static final int MaxLineLength = 1024;
+    public static String checkLinesLength(String text) {
+        StringBuilder sb = new StringBuilder();
+        int start = 0;
+        int end;
+        while ((end=text.indexOf('\n', start))>=0) {
+            String line = text.substring(start, end);
+            if (line.length()>MaxLineLength)
+                sb.append(line.substring(0, MaxLineLength)).append("....\n");
+            else
+                sb.append(line).append('\n');
+            start = end+1;
+        }
+        String line = text.substring(start);
+        if (line.length()>MaxLineLength)
+            sb.append(line.substring(0, MaxLineLength)).append("....");
+        else
+            sb.append(line);
+        return sb.toString();
+    }
+    //===============================================================
     //===============================================================
 }

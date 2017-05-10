@@ -42,6 +42,7 @@ import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.settingsmanager.commons.ICommons;
+import org.tango.settingsmanager.commons.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,6 +63,7 @@ public class FileBrowserDialog extends JDialog {
 	private String relativePath;
     private DeviceProxy managerProxy;
 	protected FileBrowserTree fileBrowserTree;
+	private String approveButtonText = "View";
 	private int returnValue = JOptionPane.OK_OPTION;
 	private static final Dimension dimension = new Dimension(400, 400);
 	//===============================================================
@@ -158,14 +160,7 @@ public class FileBrowserDialog extends JDialog {
                     content = Except.str_exception(e);
                 }
             }
-            contentTextArea.setText(content);
-
-            //	resize text area
-        /*
-        Dimension maxDimension = new Dimension(dimension.width*2, dimension.height);
-        contentScrollPane.setPreferredSize(
-                Utils.getTextDimension(contentTextArea, maxDimension));
-        */
+            contentTextArea.setText(Utils.checkLinesLength(content));
         }
     }
     //===============================================================
@@ -324,6 +319,13 @@ public class FileBrowserDialog extends JDialog {
 	}
 	//===============================================================
 	//===============================================================
+	@SuppressWarnings("unused")
+	public void setTitle(String text) {
+		//  Used by programmer to customize
+		super.setTitle(text);
+	}
+	//===============================================================
+	//===============================================================
 	public String getSelectedFile() {
 		return selectedFile;
 	}
@@ -359,7 +361,9 @@ public class FileBrowserDialog extends JDialog {
 		try {
 			FileBrowserDialog	dialog =
 					new FileBrowserDialog(new JFrame(), new DeviceProxy(ICommons.deviceHeader+path), path);
-            dialog.setDialogTitle("RIPS settings");
+            dialog.setTitle("BlaBlaBla");
+			dialog.setDialogTitle("RIPS settings");
+			dialog.setApproveButtonText("Write settings");
 			if (dialog.showDialog()==JOptionPane.OK_OPTION){
 				String fileName = dialog.getSelectedFile();
 				System.out.println(fileName);

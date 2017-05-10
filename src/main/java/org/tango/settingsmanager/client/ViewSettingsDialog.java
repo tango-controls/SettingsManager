@@ -54,6 +54,7 @@ import java.awt.*;
 @SuppressWarnings("MagicConstant")
 public class ViewSettingsDialog extends JDialog {
 	private String  selectedFile = null;
+    private String approveButtonText = "View";
 	private static final Dimension maxDimension = new Dimension(600, 800);
 	//===============================================================
 	/**
@@ -102,6 +103,7 @@ public class ViewSettingsDialog extends JDialog {
 		this(parent, managerProxy, apply, null);
 	}
 	//===============================================================
+	//===============================================================
 	public ViewSettingsDialog(JFrame parent, DeviceProxy managerProxy, boolean apply, String fileName)
 			throws DevFailed {
 		super(parent, true);
@@ -116,7 +118,7 @@ public class ViewSettingsDialog extends JDialog {
 			titleLabel.setText("File: " + fileName);
 			String content;
 			content = getFileContent(managerProxy, fileName);
-			contentTextArea.setText(content);
+			contentTextArea.setText(Utils.checkLinesLength(content));
 
 			//	resize text area
 			contentScrollPane.setPreferredSize(
@@ -145,7 +147,7 @@ public class ViewSettingsDialog extends JDialog {
 			DbDatum datum = managerProxy.get_property("SettingsFilesPath");
 			FileBrowserDialog dialog =
 					new FileBrowserDialog(this, managerProxy, datum.extractString());
-			dialog.setApproveButtonText("Apply");
+			dialog.setApproveButtonText(approveButtonText);
 			if (dialog.showDialog()==JOptionPane.OK_OPTION) {
 				return dialog.getSelectedFile();
 			}
@@ -154,6 +156,20 @@ public class ViewSettingsDialog extends JDialog {
 		}
 		return null;
 	}
+	//===============================================================
+	//===============================================================
+	@SuppressWarnings("unused")
+    public void setApproveButtonText(String text) {
+	    //  Used by programmer to customize
+	    approveButtonText = text;
+    }
+	//===============================================================
+	//===============================================================
+	@SuppressWarnings("unused")
+    public void setTitle(String text) {
+	    //  Used by programmer to customize
+	    super.setTitle(text);
+    }
 	//===============================================================
 	//===============================================================
 
