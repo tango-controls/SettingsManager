@@ -48,6 +48,8 @@ package org.tango.settingsmanager;
 
 /*----- PROTECTED REGION ID(SettingsManager.imports) ENABLED START -----*/
 import fr.esrf.Tango.*;
+import fr.esrf.TangoApi.DbDatum;
+import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoApi.PipeBlob;
 import fr.esrf.TangoApi.PipeDataElement;
 import fr.esrf.TangoDs.Except;
@@ -238,6 +240,25 @@ public class SettingsManager {
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setUseAttributeFormat
 	}
 	
+	/**
+	 * Device Property TheLastAppliedFile
+	 * The last applied file to set LastAppliedFile attribute name
+	 */
+	@DeviceProperty(name="TheLastAppliedFile", description="The last applied file to set LastAppliedFile attribute name"  )
+	private String theLastAppliedFile;
+	/**
+	 * set property TheLastAppliedFile
+	 * @param  theLastAppliedFile  see description above.
+	 */
+	public void setTheLastAppliedFile(String theLastAppliedFile) {
+		this.theLastAppliedFile = theLastAppliedFile;
+		/*----- PROTECTED REGION ID(SettingsManager.setTheLastAppliedFile) ENABLED START -----*/
+		
+		//	Check property value here
+		
+		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setTheLastAppliedFile
+	}
+	
 
 
 	//========================================================
@@ -260,6 +281,21 @@ public class SettingsManager {
 		defaultAttributes = defaultAttributeList;
         checkChangePeriod = DEFAULT_CHECK_PERIOD;
 		Utils.setSettingsTimeout(settingsTimeout);
+
+        if (theLastAppliedFile!=null && !theLastAppliedFile.isEmpty()) {
+            //	Set lastAppliedFile to the input file name
+            if (!theLastAppliedFile.endsWith(".ts"))
+                theLastAppliedFile += ".ts";
+            lastAppliedFile = theLastAppliedFile;
+
+            //  Start a thread to check if settings have changed after apply
+            if (checkChangePeriod>0) {
+                String fileName = absolutePath + '/' + theLastAppliedFile;
+                compareThread = new SettingsCompareThread(
+                        fileName, checkChangePeriod, useAttributeFormat);
+                compareThread.start();
+            }
+        }
 
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.initDevice
 		xlogger.exit();
@@ -734,9 +770,19 @@ public class SettingsManager {
 			}
 			//	Set lastGeneratedFile to the input file name
 			lastGeneratedFile = Utils.getDisplayFileName(fileGenerator.getFileName());
+
 			//	Set lastAppliedFile to the input file name
 			//	because generated and applied are same
 			lastAppliedFile = lastGeneratedFile;
+            setTheLastAppliedFileProperty();
+
+			//  Start a thread to check if settings have changed after apply
+			if (checkChangePeriod>0) {
+				String fileName = absolutePath+'/'+fileGenerator.getFileName();
+				compareThread = new SettingsCompareThread(
+								fileName, checkChangePeriod, useAttributeFormat);
+				compareThread.start();
+			}
 		}
 		catch (DevFailed e) {
 			setState(DevState.ALARM);
@@ -782,13 +828,14 @@ public class SettingsManager {
 				Except.throw_exception("AppliedFailed", status);
 			}
 			lastAppliedFile = Utils.getDisplayFileName(applySettingsIn);
+            setTheLastAppliedFileProperty();
 
             //  Start a thread to check if settings have changed after apply
             if (checkChangePeriod>0) {
-                compareThread = new SettingsCompareThread(fileName, checkChangePeriod, useAttributeFormat);
+                compareThread = new SettingsCompareThread(
+                		fileName, checkChangePeriod, useAttributeFormat);
                 compareThread.start();
             }
-
 		}
 		catch (DevFailed e) {
 			setState(DevState.ALARM);
@@ -987,6 +1034,11 @@ public class SettingsManager {
 
 		System.out.println("Absolute path: " + absolutePath);
 	}
+
+	private void setTheLastAppliedFileProperty() throws DevFailed {
+	    new DeviceProxy(deviceManager.getName()).put_property(
+	            new DbDatum("TheLastAppliedFile", lastAppliedFile));
+    }
 	/*----- PROTECTED REGION END -----*/	//	SettingsManager.methods
 
 

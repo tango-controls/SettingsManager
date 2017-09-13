@@ -16,7 +16,9 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 10-05-2017  15:59:48)</center><br>\n" + 
+		"	(Generated 13-09-2017  15:20:39)</center><br>\n" + 
+		"<li><b>SettingManager-2.0 - 13/09/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; LastAppliedFile is now memorized.<br>" + 
 		"<li><b>SettingManager-1.9 - 10/05/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add some methods to customize file browser.<br>" + 
 		"<li><b>SettingManager-1.8 - 10/05/17:</b><br>" + 

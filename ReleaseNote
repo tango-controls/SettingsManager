@@ -17,6 +17,9 @@
 
 
 
+SettingManager-2.0 - 13/09/17:
+    LastAppliedFile is now memorized.
+
 SettingManager-1.9 - 10/05/17:
 	Add some methods to customize file browser.
 
