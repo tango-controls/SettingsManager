@@ -17,6 +17,9 @@
 
 
 
+SettingManager-2.1 - 18/09/17:
+    Fix a problem when generate and reload file for check changes.
+
 SettingManager-2.0 - 13/09/17:
     LastAppliedFile is now memorized.
 

@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import static org.tango.settingsmanager.commons.ICommons.OK_MESSAGE;
+import static org.tango.settingsmanager.commons.ICommons.extension;
 
 /*----- PROTECTED REGION END -----*/	//	SettingsManager.imports
 
@@ -283,14 +284,14 @@ public class SettingsManager {
 		Utils.setSettingsTimeout(settingsTimeout);
 
         if (theLastAppliedFile!=null && !theLastAppliedFile.isEmpty()) {
-            //	Set lastAppliedFile to the input file name
-            if (!theLastAppliedFile.endsWith(".ts"))
-                theLastAppliedFile += ".ts";
+            //	Set lastAppliedFile to the input file name and remove extension for display
+            if (theLastAppliedFile.endsWith(".ts"))
+                theLastAppliedFile = lastAppliedFile.substring(0, lastAppliedFile.length()-(".ts").length());
             lastAppliedFile = theLastAppliedFile;
 
             //  Start a thread to check if settings have changed after apply
             if (checkChangePeriod>0) {
-                String fileName = absolutePath + '/' + theLastAppliedFile;
+                String fileName = absolutePath + '/' + theLastAppliedFile + ".ts";
                 compareThread = new SettingsCompareThread(
                         fileName, checkChangePeriod, useAttributeFormat);
                 compareThread.start();
@@ -779,6 +780,9 @@ public class SettingsManager {
 			//  Start a thread to check if settings have changed after apply
 			if (checkChangePeriod>0) {
 				String fileName = absolutePath+'/'+fileGenerator.getFileName();
+				if (!fileName.endsWith('.'+extension))
+					fileName += '.'+extension;
+				System.out.println("loading " + fileName);
 				compareThread = new SettingsCompareThread(
 								fileName, checkChangePeriod, useAttributeFormat);
 				compareThread.start();
