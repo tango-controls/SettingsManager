@@ -24,7 +24,7 @@ CLASS	   = SettingsManager
 PACKAGE = org.tango.settingsmanager
 SOURCE_FILES = src/main/java/org/tango/settingsmanager
 MAJOR_VERS   = 2
-MINOR_VERS   = 1
+MINOR_VERS   = 2
 RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
 
 #=============================================================================
@@ -54,7 +54,7 @@ documentation:
 
 
 TANGO_JAVA=$(TANGO_HOME)/release/java
-CLP=$(TANGO_JAVA)/appli/org.tango.pogo.jar
+CLP=$(TANGO_JAVA)/appli/Pogo.jar
 UPDATE_CLASS =  org.tango.pogo.pogo_gui.tools.UpdateRelease
 version:
 	@echo "-----------------------------------------"

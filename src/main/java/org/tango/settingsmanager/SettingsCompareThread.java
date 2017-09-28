@@ -56,8 +56,11 @@ public class SettingsCompareThread extends Thread {
     private boolean endOfThread = false;
     private List<FileParser.Attribute> appliedAttributes;
     private String errorMessage = null;
+    private String lastErrorMessage = null;
     private List<String> alarmAttributes = new ArrayList<>();
+    private List<String> lastAlarmAttributes = new ArrayList<>();
     private int period;
+    private final Object monitor = new Object();
     //===============================================================
     /**
      *
@@ -106,8 +109,10 @@ public class SettingsCompareThread extends Thread {
     }
     //===============================================================
     //===============================================================
-    public synchronized String[] getAlarmAttributes() {
-        return alarmAttributes.toArray(new String[alarmAttributes.size()]);
+    public String[] getAlarmAttributes() {
+        synchronized (monitor) {
+            return lastAlarmAttributes.toArray(new String[lastAlarmAttributes.size()]);
+        }
     }
     //===============================================================
     //===============================================================
@@ -157,6 +162,10 @@ public class SettingsCompareThread extends Thread {
                 System.err.println(e.errors[0].desc);
                 errorMessage = e.errors[0].desc;
             }
+            synchronized (monitor) {
+                lastAlarmAttributes.addAll(alarmAttributes);
+                lastErrorMessage = errorMessage;
+            }
             waitNextLoop();
         }
         Utils.debugTrace("-------------------> Thread exiting....");
@@ -199,14 +208,18 @@ public class SettingsCompareThread extends Thread {
     //===============================================================
     //===============================================================
     public boolean isAlarm() {
-        return errorMessage!=null && !alarmAttributes.isEmpty();
+        synchronized (monitor) {
+            return lastErrorMessage != null && !lastAlarmAttributes.isEmpty();
+        }
     }
     //===============================================================
     //===============================================================
     public String getErrorMessage() {
-        if (errorMessage==null)
-            return "";
-        return errorMessage.trim();
+        synchronized (monitor) {
+            if (lastErrorMessage == null)
+                return "";
+            return lastErrorMessage.trim();
+        }
     }
     //===============================================================
     //===============================================================

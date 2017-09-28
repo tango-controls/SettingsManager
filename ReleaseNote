@@ -17,6 +17,9 @@
 
 
 
+SettingManager-2.2 - 28/09/17:
+    Fix a problem in threads synchronization.
+
 SettingManager-2.1 - 18/09/17:
     Fix a problem when generate and reload file for check changes.
 
