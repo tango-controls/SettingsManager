@@ -163,6 +163,7 @@ public class SettingsCompareThread extends Thread {
                 errorMessage = e.errors[0].desc;
             }
             synchronized (monitor) {
+                lastAlarmAttributes.clear();
                 lastAlarmAttributes.addAll(alarmAttributes);
                 lastErrorMessage = errorMessage;
             }

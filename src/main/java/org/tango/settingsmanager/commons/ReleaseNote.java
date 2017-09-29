@@ -16,7 +16,9 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 28-09-2017  10:09:43)</center><br>\n" + 
+		"	(Generated 29-09-2017  09:54:06)</center><br>\n" + 
+		"<li><b>SettingManager-2.3 - 29/09/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Improve status message<br>" + 
 		"<li><b>SettingManager-2.2 - 28/09/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Fix a problem in threads synchronization.<br>" + 
 		"<li><b>SettingManager-2.1 - 18/09/17:</b><br>" + 
