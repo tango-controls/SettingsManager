@@ -20,8 +20,8 @@
 
 #=============================================================================
 #
-CLASS	   = SettingsManager
-PACKAGE = org.tango.settingsmanager
+CLASS	     = SettingsManager
+PACKAGE      = org.tango.settingsmanager
 HOME_SRC     = src/main/java/
 SOURCE_FILES = org/tango/settingsmanager
 MAJOR_VERS   = 2
@@ -31,20 +31,20 @@ RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
 #=============================================================================
 # Generate documentation
 #
-DOC_DIR    = ./doc/classes
+DOC_DIR    = doc/classes
 DOC_HEADER = "$(CLASS) API documention"
 OVERVIEW   = ./overview.html
 documentation:
 	cd $(HOME_SRC); \
-	javadoc 				\
-	-version -author		\
-	-public					\
+	javadoc \
+	-version -author \
+	-public \
 	-windowtitle "$(CLASS) API" \
-	-header $(DOC_HEADER)	\
-	-d      $(DOC_DIR)		\
-	-link  .				\
-	-group "SettingsManager client classes"    "org.tango.settingsmanager.client"   \
-	-group "SettingsManager server classes"    "org.tango.settingsmanager"   \
+	-header $(DOC_HEADER) \
+	-d      ../../../$(DOC_DIR) \
+	-link . \
+	-group "SettingsManager client classes"    "org.tango.settingsmanager.client" \
+	-group "SettingsManager server classes"    "org.tango.settingsmanager" \
 	\
 	$(SOURCE_FILES)/client/SettingsManagerClient.java \
 	$(SOURCE_FILES)/client/SettingsManagedEvent.java \
