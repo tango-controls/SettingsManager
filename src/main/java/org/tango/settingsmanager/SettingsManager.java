@@ -68,6 +68,7 @@ import org.tango.server.dynamic.DynamicManager;
 import org.tango.server.pipe.PipeValue;
 import org.tango.settingsmanager.commons.ICommons;
 import org.tango.settingsmanager.commons.Utils;
+import sun.reflect.annotation.ExceptionProxy;
 
 import java.io.File;
 import java.util.List;
@@ -285,17 +286,27 @@ public class SettingsManager {
 
         if (theLastAppliedFile!=null && !theLastAppliedFile.isEmpty()) {
             //	Set lastAppliedFile to the input file name and remove extension for display
-            if (theLastAppliedFile.endsWith(".ts"))
-                theLastAppliedFile = lastAppliedFile.substring(0, lastAppliedFile.length()-(".ts").length());
-            lastAppliedFile = theLastAppliedFile;
+			try {
+				if (theLastAppliedFile.endsWith(".ts"))
+					theLastAppliedFile = lastAppliedFile.substring(0, lastAppliedFile.length() - (".ts").length());
+				lastAppliedFile = theLastAppliedFile;
 
-            //  Start a thread to check if settings have changed after apply
-            if (checkChangePeriod>0) {
-                String fileName = absolutePath + '/' + theLastAppliedFile + ".ts";
-                compareThread = new SettingsCompareThread(
-                        fileName, checkChangePeriod, useAttributeFormat);
-                compareThread.start();
-            }
+				//  Start a thread to check if settings have changed after apply
+				if (checkChangePeriod>0) {
+					String fileName = absolutePath + '/' + theLastAppliedFile + ".ts";
+					compareThread = new SettingsCompareThread(
+							fileName, checkChangePeriod, useAttributeFormat);
+					compareThread.start();
+				}
+			}
+			catch (DevFailed e) {
+				setStatus(e.errors[0].desc);
+				setState(DevState.ALARM);
+			}
+			catch (Exception e) {
+				setStatus(e.toString());
+				setState(DevState.ALARM);
+			}
         }
 
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.initDevice

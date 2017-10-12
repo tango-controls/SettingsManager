@@ -71,6 +71,7 @@
     private void applySettingsItemActionPerformed(ActionEvent evt) {
         try {
             <font COLOR="#3388ff">//  Apply settings</font>
+            settingsClient.setApproveButtonText("Apply");
             String fileName = settingsClient.applySettings(this);
             if (fileName!=null) {
                 System.out.println("Applying " + fileName);

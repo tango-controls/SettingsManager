@@ -17,6 +17,10 @@
 
 
 
+SettingManager-2.4 - 12/10/17:
+    Fix bug if LastAppliedfile not found at startup.
+    Re organize SettingsManagerPanel class.
+
 SettingManager-2.3 - 29/09/17:
     Improve status message
 

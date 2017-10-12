@@ -22,9 +22,10 @@
 #
 CLASS	   = SettingsManager
 PACKAGE = org.tango.settingsmanager
-SOURCE_FILES = src/main/java/org/tango/settingsmanager
+HOME_SRC     = src/main/java/
+SOURCE_FILES = org/tango/settingsmanager
 MAJOR_VERS   = 2
-MINOR_VERS   = 3
+MINOR_VERS   = 4
 RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
 
 #=============================================================================
@@ -34,6 +35,7 @@ DOC_DIR    = ./doc/classes
 DOC_HEADER = "$(CLASS) API documention"
 OVERVIEW   = ./overview.html
 documentation:
+	cd $(HOME_SRC); \
 	javadoc 				\
 	-version -author		\
 	-public					\

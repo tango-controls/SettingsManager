@@ -43,7 +43,6 @@ import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.TangoDs.TangoConst;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
-import org.tango.settingsmanager.client.SettingsManagerPanel;
 import org.tango.settingsmanager.client.gui_utils.IconUtils;
 import org.tango.settingsmanager.commons.ICommons;
 
@@ -153,9 +152,6 @@ public class FileBrowserTree extends JTree implements TangoConst {
                     if (parent instanceof FileBrowserDialog)
                         ((FileBrowserDialog)parent).manageSelection();
                     else
-                    if (parent instanceof SettingsManagerPanel)
-                        ((SettingsManagerPanel)parent).applySettingsFile();
-                    else
                         System.err.println("Parent unknown class !");
                 }
             }
@@ -252,8 +248,6 @@ public class FileBrowserTree extends JTree implements TangoConst {
     private void setSelectedFileInfo(String fileName) {
         if (parent instanceof FileBrowserDialog)
             ((FileBrowserDialog)parent).setSelectedFileInfo(fileName);
-        else
-            ((SettingsManagerPanel)parent).setSelectedFileInfo(fileName);
     }
     //===============================================================
     //===============================================================

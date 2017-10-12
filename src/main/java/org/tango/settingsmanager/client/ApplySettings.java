@@ -78,7 +78,7 @@ public class ApplySettings {
 		//	And select file
 		ViewSettingsDialog dialog = new ViewSettingsDialog(parent,
                 managerProxy, true, fileName, title, approveButtonText);
-		this.fileName = dialog.showDialog();
+		this.fileName = dialog.getSelectedFile();
 
 		//	Check if stand alone or from another application
 		String s = System.getProperty("StandAlone");

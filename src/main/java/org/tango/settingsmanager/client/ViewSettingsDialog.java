@@ -120,6 +120,8 @@ public class ViewSettingsDialog extends JDialog {
 		if (fileName==null)
 			fileName = selectFile(managerProxy);
 		if (fileName!=null) {
+			/* File view is now done in right side -> do not display a dialog!
+
 			// Display file name then read and display file content
 			titleLabel.setText("File: " + fileName);
 			String content;
@@ -133,6 +135,9 @@ public class ViewSettingsDialog extends JDialog {
 			selectedFile = fileName;
 			pack();
 			ATKGraphicsUtils.centerDialog(this);
+			*/
+			selectedFile = fileName;
+			applyBtnActionPerformed(null);
 		}
 		else {
 			cancelBtnActionPerformed(null);
@@ -272,6 +277,11 @@ public class ViewSettingsDialog extends JDialog {
 	private void doClose() {
 		setVisible(false);
 		dispose();
+	}
+	//===============================================================
+	//===============================================================
+	public String getSelectedFile() {
+		return selectedFile;
 	}
 	//===============================================================
 	//===============================================================

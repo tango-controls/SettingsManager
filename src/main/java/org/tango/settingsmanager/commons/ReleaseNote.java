@@ -16,7 +16,10 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 29-09-2017  09:54:06)</center><br>\n" + 
+		"	(Generated 12-10-2017  10:59:54)</center><br>\n" + 
+		"<li><b>SettingManager-2.4 - 12/10/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix bug if LastAppliedfile not found at startup.<br>" + 
+		"&nbsp; &nbsp; &nbsp; Re organize SettingsManagerPanel class.<br>" + 
 		"<li><b>SettingManager-2.3 - 29/09/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Improve status message<br>" + 
 		"<li><b>SettingManager-2.2 - 28/09/17:</b><br>" + 
