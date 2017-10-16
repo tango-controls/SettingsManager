@@ -152,7 +152,7 @@ public class FileBrowserDialog extends JDialog {
             else {
                 try {
                     //  Read file content and display it
-                    if (fileName.startsWith(relativePath))
+                    if (fileName.startsWith(relativePath+'/'))
                         fileName = fileName.substring(relativePath.length() + 1);
                     content = getFileContent(managerProxy, fileName);
                 } catch (DevFailed e) {

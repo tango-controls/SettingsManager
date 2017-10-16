@@ -17,6 +17,9 @@
 
 
 
+SettingManager-2.5 - 16/10/17:
+    Fix a bug when file starts with project name.
+
 SettingManager-2.4 - 12/10/17:
     Fix bug if LastAppliedfile not found at startup.
     Re organize SettingsManagerPanel class.

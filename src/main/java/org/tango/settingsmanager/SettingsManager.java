@@ -50,8 +50,6 @@ package org.tango.settingsmanager;
 import fr.esrf.Tango.*;
 import fr.esrf.TangoApi.DbDatum;
 import fr.esrf.TangoApi.DeviceProxy;
-import fr.esrf.TangoApi.PipeBlob;
-import fr.esrf.TangoApi.PipeDataElement;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.TangoDs.TangoConst;
 import org.slf4j.Logger;
@@ -68,10 +66,8 @@ import org.tango.server.dynamic.DynamicManager;
 import org.tango.server.pipe.PipeValue;
 import org.tango.settingsmanager.commons.ICommons;
 import org.tango.settingsmanager.commons.Utils;
-import sun.reflect.annotation.ExceptionProxy;
 
 import java.io.File;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import static org.tango.settingsmanager.commons.ICommons.OK_MESSAGE;
