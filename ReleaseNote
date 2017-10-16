@@ -17,7 +17,8 @@
 
 
 
-SettingManager-2.5 - 16/10/17:
+SettingManager-2.6 - 16/10/17:
+    Add a property to forget changes checks.
     Fix a bug when file starts with project name.
 
 SettingManager-2.4 - 12/10/17:

@@ -257,6 +257,26 @@ public class SettingsManager {
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setTheLastAppliedFile
 	}
 	
+	/**
+	 * Device Property CheckChanges
+	 * Check if settings have changed since last load if true.
+	 */
+	@DeviceProperty(name="CheckChanges", description="Check if settings have changed since last load if true." ,
+	        defaultValue={ "true" } )
+	private boolean checkChanges;
+	/**
+	 * set property CheckChanges
+	 * @param  checkChanges  see description above.
+	 */
+	public void setCheckChanges(boolean checkChanges) {
+		this.checkChanges = checkChanges;
+		/*----- PROTECTED REGION ID(SettingsManager.setCheckChanges) ENABLED START -----*/
+		
+		//	Check property value here
+		
+		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setCheckChanges
+	}
+	
 
 
 	//========================================================
@@ -483,11 +503,12 @@ public class SettingsManager {
 	/**
 	 * Attribute CheckChangePeriod, int, Scalar, READ_WRITE
 	 * description:
-	 *     Period (in seconds) to check if settings have change since last appalied.
+	 *     Period (in seconds) to check if settings have change since last applied.
+	 *     
 	 */
 	@Attribute(name="CheckChangePeriod", isMemorized=true, isMemorizedAtInit=true,
 	           isPolled=true, pollingPeriod=1000)
-	@AttributeProperties(description="Period (in seconds) to check if settings have change since last appalied.",
+	@AttributeProperties(description="Period (in seconds) to check if settings have change since last applied.\n",
 	                     label="Check Change Period", unit="sec.", maxValue="300",
 	                     minValue="1", changeEventAbsolute="1")
 	private int checkChangePeriod;
