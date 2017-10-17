@@ -25,7 +25,7 @@ PACKAGE      = org.tango.settingsmanager
 HOME_SRC     = src/main/java/
 SOURCE_FILES = org/tango/settingsmanager
 MAJOR_VERS   = 2
-MINOR_VERS   = 6
+MINOR_VERS   = 7
 RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
 
 #=============================================================================
@@ -64,10 +64,10 @@ version:
 	@echo "-----------------------------------------"
 	echo "Updating date and revision number..."
 	java -cp $(CLP) $(UPDATE_CLASS) \
-		-file $(SOURCE_FILES)/commons/ICommons.java \
+		-file $(HOME_SRC)/$(SOURCE_FILES)/commons/ICommons.java \
 		-release $(RELEASE) \
 		-title   "$(CLASS) Release Notes" \
-		-note_path $(SOURCE_FILES)/commons \
+		-note_path $(HOME_SRC)/$(SOURCE_FILES)/commons \
 		-package $(PACKAGE).commons
 		
 

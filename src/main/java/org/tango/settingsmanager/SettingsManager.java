@@ -308,7 +308,7 @@ public class SettingsManager {
 				lastAppliedFile = theLastAppliedFile;
 
 				//  Start a thread to check if settings have changed after apply
-				if (checkChangePeriod>0) {
+				if (checkChanges && checkChangePeriod>0) {
 					String fileName = absolutePath + '/' + theLastAppliedFile + ".ts";
 					compareThread = new SettingsCompareThread(
 							fileName, checkChangePeriod, useAttributeFormat);
@@ -806,7 +806,7 @@ public class SettingsManager {
             setTheLastAppliedFileProperty();
 
 			//  Start a thread to check if settings have changed after apply
-			if (checkChangePeriod>0) {
+			if (checkChanges && checkChangePeriod>0) {
 				String fileName = absolutePath+'/'+fileGenerator.getFileName();
 				if (!fileName.endsWith('.'+extension))
 					fileName += '.'+extension;
@@ -863,7 +863,7 @@ public class SettingsManager {
             setTheLastAppliedFileProperty();
 
             //  Start a thread to check if settings have changed after apply
-            if (checkChangePeriod>0) {
+            if (checkChanges && checkChangePeriod>0) {
                 compareThread = new SettingsCompareThread(
                 		fileName, checkChangePeriod, useAttributeFormat);
                 compareThread.start();
