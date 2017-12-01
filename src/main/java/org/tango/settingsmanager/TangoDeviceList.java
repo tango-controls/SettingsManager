@@ -105,9 +105,17 @@ public class TangoDeviceList extends ArrayList<TangoDevice>  {
         //  Add format to last attribute if needed
         if (useFormat) {
             String  attName = attributeName.substring(deviceName.length()+1);
-            String format = tangoDevice.getAttributeFormat(attName);
-            tangoDevice.get(tangoDevice.size()-1).setFormat(format);
-            //System.out.println(deviceName+'/'+attributeName + ": " + format);
+            String[] format = tangoDevice.getAttributeFormat(attName);
+
+            //  first is display format, second is display unit
+            tangoDevice.get(tangoDevice.size()-1).setFormat(format[0]);
+            try {
+                double displayUnit = Double.parseDouble(format[1]);
+                tangoDevice.get(tangoDevice.size()-1).setDisplayUnit(displayUnit);
+            }
+            catch (NumberFormatException e) { /* display unit not set */ }
+            //System.out.println(deviceName+'/'+attributeName + ": " + format[0]
+            //    + " -> display unit = " + tangoDevice.get(tangoDevice.size()-1).getDisplayUnit());
         }
     }
     //===============================================================

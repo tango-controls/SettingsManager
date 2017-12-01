@@ -16,7 +16,9 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>SettingsManager Release Notes </h2>\n" + 
-		"	(Generated 17-10-2017  09:56:02)</center><br>\n" + 
+		"	(Generated 01-12-2017  10:17:42)</center><br>\n" + 
+		"<li><b>SettingManager-2.8 - 01/12/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Manage display_unit attribute in generating settings file.<br>" + 
 		"<li><b>SettingManager-2.7 - 16/10/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add a property to forget changes checks.<br>" + 
 		"&nbsp; &nbsp; &nbsp; Fix a bug when file starts with project name.<br>" + 

@@ -89,10 +89,10 @@ public class TangoDevice extends ArrayList<TangoAttribute> implements TangoConst
     }
     //===============================================================
     //===============================================================
-    public String getAttributeFormat(String attributeName) throws DevFailed {
+    public String[] getAttributeFormat(String attributeName) throws DevFailed {
         //  Get attribute config for attribute
         AttributeInfoEx info = proxy.get_attribute_info_ex(attributeName);
-        return info.format;
+        return new String[] { info.format, info.display_unit };
     }
     //===============================================================
     //===============================================================

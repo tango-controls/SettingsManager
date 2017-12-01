@@ -92,49 +92,49 @@ public class ReadTangoAttribute extends TangoAttribute implements TangoConst {
                 case Tango_DEV_UCHAR:
                     short[] ucv = deviceAttribute.extractShortArray();
                     values = new Object[ucv.length];
-                    for (int i = 0 ; i<ucv.length ; i++) values[i] = ucv[i];
+                    for (int i = 0 ; i<ucv.length ; i++) values[i] = ucv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_SHORT:
                     short[] sv = deviceAttribute.extractShortArray();
                     values = new Object[sv.length];
-                    for (int i = 0 ; i<sv.length ; i++) values[i] = sv[i];
+                    for (int i = 0 ; i<sv.length ; i++) values[i] = sv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_USHORT:
                     int[] usv = deviceAttribute.extractUShortArray();
                     values = new Object[usv.length];
-                    for (int i = 0 ; i<usv.length ; i++) values[i] = usv[i];
+                    for (int i = 0 ; i<usv.length ; i++) values[i] = usv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_LONG:
                     int[] iv = deviceAttribute.extractLongArray();
                     values = new Object[iv.length];
-                    for (int i = 0 ; i<iv.length ; i++) values[i] = iv[i];
+                    for (int i = 0 ; i<iv.length ; i++) values[i] = iv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_ULONG:
                     long[] uiv = deviceAttribute.extractULongArray();
                     values = new Object[uiv.length];
-                    for (int i = 0 ; i<uiv.length ; i++) values[i] = uiv[i];
+                    for (int i = 0 ; i<uiv.length ; i++) values[i] = uiv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_LONG64:
                     long[] lv = deviceAttribute.extractLong64Array();
                     values = new Object[lv.length];
-                    for (int i = 0 ; i<lv.length ; i++) values[i] = lv[i];
+                    for (int i = 0 ; i<lv.length ; i++) values[i] = lv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_FLOAT:
                     float[] fv = deviceAttribute.extractFloatArray();
                     values = new Object[fv.length];
-                    for (int i = 0 ; i<fv.length ; i++) values[i] = fv[i];
+                    for (int i = 0 ; i<fv.length ; i++) values[i] = fv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_DOUBLE:
                     double[] dv = deviceAttribute.extractDoubleArray();
                     values = new Object[dv.length];
-                    for (int i = 0 ; i<dv.length ; i++) values[i] = dv[i];
+                    for (int i = 0 ; i<dv.length ; i++) values[i] = dv[i]*displayUnit;
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_ENUM:

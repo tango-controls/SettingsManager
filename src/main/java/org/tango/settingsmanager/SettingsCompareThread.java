@@ -188,7 +188,7 @@ public class SettingsCompareThread extends Thread {
                     "Apply and Read have different size\nAttributes could be badly initialized (?)");
         }
         List<String> alarmAttributes = new ArrayList<>();
-        errorMessage = "";
+        StringBuilder sb = new StringBuilder();
         for (FileParser.Attribute appliedAttribute : appliedAttributes) {
             FileParser.Attribute settingsAttribute = null;
             for (FileParser.Attribute attribute : settings) {
@@ -201,9 +201,10 @@ public class SettingsCompareThread extends Thread {
             String str;
             if ((str=appliedAttribute.compareSettings(settingsAttribute))!=null) {
                 alarmAttributes.add(appliedAttribute.getName());
-                errorMessage += str+"\n";
+                sb.append(str).append("\n");
             }
         }
+        errorMessage = sb.toString();
         return alarmAttributes;
     }
     //===============================================================

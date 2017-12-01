@@ -36,8 +36,6 @@ package org.tango.settingsmanager;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoDs.TangoConst;
 
-import java.util.List;
-
 /**
  * This class is able to define a Tango attribute
  *
@@ -49,6 +47,7 @@ public class TangoAttribute implements TangoConst {
     protected String deviceName;
     protected DeviceAttribute deviceAttribute;
     protected String format = null;
+    protected double displayUnit = 1.0;
     //===============================================================
     //===============================================================
     public TangoAttribute(String attributeName) {
@@ -88,6 +87,16 @@ public class TangoAttribute implements TangoConst {
     //===============================================================
     public void setFormat(String format) {
         this.format = format;
+    }
+    //===============================================================
+    //===============================================================
+    public double getDisplayUnit() {
+        return displayUnit;
+    }
+    //===============================================================
+    //===============================================================
+    public void setDisplayUnit(double displayUnit) {
+        this.displayUnit = displayUnit;
     }
     //===============================================================
     //===============================================================
