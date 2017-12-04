@@ -37,6 +37,8 @@ import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.TangoDs.TangoConst;
 
+import java.util.IllegalFormatConversionException;
+
 
 /**
  * This class is able to define a Tango attribute
@@ -92,49 +94,49 @@ public class ReadTangoAttribute extends TangoAttribute implements TangoConst {
                 case Tango_DEV_UCHAR:
                     short[] ucv = deviceAttribute.extractShortArray();
                     values = new Object[ucv.length];
-                    for (int i = 0 ; i<ucv.length ; i++) values[i] = ucv[i]*displayUnit;
+                    for (int i = 0 ; i<ucv.length ; i++) values[i] = (short)(displayUnit*ucv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_SHORT:
                     short[] sv = deviceAttribute.extractShortArray();
                     values = new Object[sv.length];
-                    for (int i = 0 ; i<sv.length ; i++) values[i] = sv[i]*displayUnit;
+                    for (int i = 0 ; i<sv.length ; i++) values[i] = (short)(displayUnit*sv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_USHORT:
                     int[] usv = deviceAttribute.extractUShortArray();
                     values = new Object[usv.length];
-                    for (int i = 0 ; i<usv.length ; i++) values[i] = usv[i]*displayUnit;
+                    for (int i = 0 ; i<usv.length ; i++) values[i] = (int)(displayUnit*usv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_LONG:
                     int[] iv = deviceAttribute.extractLongArray();
                     values = new Object[iv.length];
-                    for (int i = 0 ; i<iv.length ; i++) values[i] = iv[i]*displayUnit;
+                    for (int i = 0 ; i<iv.length ; i++) values[i] = (int)(displayUnit*iv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_ULONG:
                     long[] uiv = deviceAttribute.extractULongArray();
                     values = new Object[uiv.length];
-                    for (int i = 0 ; i<uiv.length ; i++) values[i] = uiv[i]*displayUnit;
+                    for (int i = 0 ; i<uiv.length ; i++) values[i] = (long)(displayUnit*uiv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_LONG64:
                     long[] lv = deviceAttribute.extractLong64Array();
                     values = new Object[lv.length];
-                    for (int i = 0 ; i<lv.length ; i++) values[i] = lv[i]*displayUnit;
+                    for (int i = 0 ; i<lv.length ; i++) values[i] = (long)(displayUnit*lv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_FLOAT:
                     float[] fv = deviceAttribute.extractFloatArray();
                     values = new Object[fv.length];
-                    for (int i = 0 ; i<fv.length ; i++) values[i] = fv[i]*displayUnit;
+                    for (int i = 0 ; i<fv.length ; i++) values[i] = (float)(displayUnit*fv[i]);
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_DOUBLE:
                     double[] dv = deviceAttribute.extractDoubleArray();
                     values = new Object[dv.length];
-                    for (int i = 0 ; i<dv.length ; i++) values[i] = dv[i]*displayUnit;
+                    for (int i = 0 ; i<dv.length ; i++) values[i] = displayUnit*dv[i];
                     sb.append(toProperty(values));
                     break;
                 case Tango_DEV_ENUM:
@@ -152,7 +154,7 @@ public class ReadTangoAttribute extends TangoAttribute implements TangoConst {
             }
         }
         catch (DevFailed e) {
-            e.errors[0].desc = deviceName+": " + e.errors[0].desc;
+            e.errors[0].desc = deviceName+"/" + attributeName + ": " + e.errors[0].desc;
             System.err.println(attributeName +":  " + e.errors[0].desc);
             throw e;
         }
@@ -167,8 +169,15 @@ public class ReadTangoAttribute extends TangoAttribute implements TangoConst {
             //  Check if value must be formatted
             if (format==null)
                 sb.append(values[i]);
-            else
-                sb.append(String.format(format, values[i]));
+            else {
+                try {
+                    sb.append(String.format(format, values[i]));
+                } catch (IllegalFormatConversionException e) {
+                    String error =e.toString()+ "\nformat: " + format + "\nvalue:  "+values[i];
+                    System.err.println(error);
+                    Except.throw_exception( "BadFormat", error);
+                }
+            }
 
             //  Check if image
             if (++x==dimX && dimY>1) {
