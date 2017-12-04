@@ -24,8 +24,8 @@ CLASS	     = SettingsManager
 PACKAGE      = org.tango.settingsmanager
 HOME_SRC     = src/main/java/
 SOURCE_FILES = org/tango/settingsmanager
-MAJOR_VERS   = 2
-MINOR_VERS   = 9
+MAJOR_VERS   = 3
+MINOR_VERS   = 0
 RELEASE      = $(MAJOR_VERS).$(MINOR_VERS)
 
 #=============================================================================

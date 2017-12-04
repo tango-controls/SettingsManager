@@ -73,6 +73,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
     //===============================================================
     //===============================================================
     private void insertValues() throws DevFailed {
+        if (displayUnit==0.0)
+            displayUnit = 1.0;
         switch (attributeInfo.data_type) {
             case Tango_DEV_BOOLEAN:
                 insertBoolean();
@@ -152,7 +154,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert((Short.parseShort(strValues.get(0)[0])));
+                    deviceAttribute.insert((short)
+                            ((Short.parseShort(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert(parseShortLine(strValues.get(0)));
@@ -176,7 +179,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert_uc((Short.parseShort(strValues.get(0)[0])));
+                    deviceAttribute.insert_uc((short)
+                            ((Short.parseShort(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert_uc(parseShortLine(strValues.get(0)));
@@ -201,7 +205,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert_us((Integer.parseInt(strValues.get(0)[0])));
+                    deviceAttribute.insert_us((int)
+                            ((Integer.parseInt(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert_us(parseLongLine(strValues.get(0)));
@@ -226,7 +231,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert((Integer.parseInt(strValues.get(0)[0])));
+                    deviceAttribute.insert((int)
+                            ((Integer.parseInt(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert(parseLongLine(strValues.get(0)));
@@ -251,7 +257,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert_ul((Long.parseLong(strValues.get(0)[0])));
+                    deviceAttribute.insert_ul((long)
+                            ((Long.parseLong(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert_ul(parseLong64Line(strValues.get(0)));
@@ -276,7 +283,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert((Long.parseLong(strValues.get(0)[0])));
+                    deviceAttribute.insert((long)
+                            ((Long.parseLong(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert(parseLong64Line(strValues.get(0)));
@@ -301,7 +309,8 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert((Float.parseFloat(strValues.get(0)[0])));
+                    deviceAttribute.insert((float)
+                            ((Float.parseFloat(strValues.get(0)[0]))/displayUnit));
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert(parseFloatLine(strValues.get(0)));
@@ -326,7 +335,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         try {
             switch (attributeInfo.data_format.value()) {
                 case AttrDataFormat._SCALAR:
-                    deviceAttribute.insert(Double.parseDouble(strValues.get(0)[0]));
+                    deviceAttribute.insert(Double.parseDouble(strValues.get(0)[0])/displayUnit);
                     break;
                 case AttrDataFormat._SPECTRUM:
                     deviceAttribute.insert(parseDoubleLine(strValues.get(0)));
@@ -409,7 +418,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         short[] values = new short[lineValues.length];
         int i = 0;
         for (String strValue : lineValues)
-            values[i++] = Short.parseShort(strValue);
+            values[i++] = (short)(Short.parseShort(strValue)/displayUnit);
         return values;
     }
     //===============================================================
@@ -418,7 +427,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         int[] values = new int[lineValues.length];
         int i = 0;
         for (String strValue : lineValues)
-            values[i++] = Integer.parseInt(strValue);
+            values[i++] = (int)(Integer.parseInt(strValue)/displayUnit);
         return values;
     }
     //===============================================================
@@ -427,7 +436,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         long[] values = new long[lineValues.length];
         int i = 0;
         for (String strValue : lineValues)
-            values[i++] = Long.parseLong(strValue);
+            values[i++] = (long)(Long.parseLong(strValue)/displayUnit);
         return values;
     }
     //===============================================================
@@ -436,7 +445,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         float[] values = new float[lineValues.length];
         int i = 0;
         for (String strValue : lineValues)
-            values[i++] = Float.parseFloat(strValue);
+            values[i++] = (float)(Float.parseFloat(strValue)/displayUnit);
         return values;
     }
     //===============================================================
@@ -445,7 +454,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
         double[] values = new double[lineValues.length];
         int i = 0;
         for (String strValue : lineValues)
-            values[i++] = Double.parseDouble(strValue);
+            values[i++] = Double.parseDouble(strValue)/displayUnit;
         return values;
     }
     //===============================================================
@@ -505,7 +514,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
             int i=0;
             for (short[] lineArray : array) // Y
                 for (short value : lineArray)  // X
-                    values[i++] = value;
+                    values[i++] = (short) (value/displayUnit);
             dimX = array[0].length;
         }
     }
@@ -523,7 +532,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
             int i=0;
             for (int[] lineArray : array) // Y
                 for (int value : lineArray)  // X
-                    values[i++] = value;
+                    values[i++] = (int)(value/displayUnit);
             dimX = array[0].length;
         }
     }
@@ -541,7 +550,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
             int i=0;
             for (long[] lineArray : array) // Y
                 for (long value : lineArray)  // X
-                    values[i++] = value;
+                    values[i++] = (long)(value/displayUnit);
             dimX = array[0].length;
         }
     }
@@ -559,7 +568,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
             int i=0;
             for (float[] lineArray : array) // Y
                 for (float value : lineArray)  // X
-                    values[i++] = value;
+                    values[i++] = (float)(value/displayUnit);
             dimX = array[0].length;
         }
     }
@@ -577,7 +586,7 @@ public class ApplyTangoAttribute extends TangoAttribute {
             int i=0;
             for (double[] lineArray : array) // Y
                 for (double value : lineArray)  // X
-                    values[i++] = value;
+                    values[i++] = value/displayUnit;
             dimX = array[0].length;
         }
     }
