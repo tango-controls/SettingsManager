@@ -1109,6 +1109,11 @@ public class SettingsManager {
 	public static void main(final String[] args) {
 		/*----- PROTECTED REGION ID(SettingsManager.main) ENABLED START -----*/// /**
 
+        if (args.length>0 && args[0].equals("--version")) {
+            System.out.println(Utils.getInstance().getApplicationName());
+            System.exit(0);
+        }
+
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.main
 		ServerManager.getInstance().start(args, SettingsManager.class);
 		System.out.println("------- Started -------------");
