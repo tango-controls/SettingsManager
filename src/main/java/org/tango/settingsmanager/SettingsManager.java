@@ -277,6 +277,27 @@ public class SettingsManager {
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setCheckChanges
 	}
 	
+	/**
+	 * Device Property ApplyAnyWay
+	 * Apply setting even only one device is alive
+	 */
+	@DeviceProperty(name="ApplyAnyWay", description="Apply setting even only one device is alive" ,
+	        defaultValue={ "false" } )
+	private boolean applyAnyWay;
+	/**
+	 * set property ApplyAnyWay
+	 * @param  applyAnyWay  see description above.
+	 */
+	public void setApplyAnyWay(boolean applyAnyWay) {
+		this.applyAnyWay = applyAnyWay;
+		/*----- PROTECTED REGION ID(SettingsManager.setApplyAnyWay) ENABLED START -----*/
+		
+		//	Check property value here
+		System.out.println("applyAnyWay="+applyAnyWay);
+
+		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setApplyAnyWay
+	}
+	
 
 
 	//========================================================
@@ -850,7 +871,10 @@ public class SettingsManager {
 		try {
 			//	Parse file and start applying
 			String fileName = Utils.settingsFile(absolutePath + '/' + applySettingsIn);
-			deviceList = new FileParser(fileName, ICommons.APPLY).parseAttributes(useAttributeFormat);
+			deviceList = new FileParser(
+					fileName, ICommons.APPLY, applyAnyWay).parseAttributes(useAttributeFormat);
+			if (deviceList.isEmpty())
+				Except.throw_exception("NoDeviceFound", "No device alive to apply settings");
 			deviceList.manageSettings();
 
 			//	And Check results

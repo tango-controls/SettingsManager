@@ -1,0 +1,58 @@
+# Changelog
+
+#### SettingManager-3.1 - 03/12/18:
+    ApplyAnyWay property added.
+
+#### SettingManager-3.0 - 04/12/17:
+    Manage display_unit attribute in generating settings file.
+
+#### SettingManager-2.7 - 16/10/17:
+    Add a property to forget changes checks.
+    Fix a bug when file starts with project name.
+
+#### SettingManager-2.4 - 12/10/17:
+    Fix bug if LastAppliedfile not found at startup.
+    Re organize SettingsManagerPanel class.
+
+#### SettingManager-2.3 - 29/09/17:
+    Improve status message
+
+#### SettingManager-2.2 - 28/09/17:
+    Fix a problem in threads synchronization.
+
+#### SettingManager-2.1 - 18/09/17:
+    Fix a problem when generate and reload file for check changes.
+
+#### SettingManager-2.0 - 13/09/17:
+    LastAppliedFile is now memorized.
+
+#### SettingManager-1.9 - 10/05/17:
+    Add some methods to customize file browser.
+
+#### SettingManager-1.8 - 10/05/17:
+    Fix a problem with java1.8 to display very long line.
+
+#### SettingManager-1.7 - 24/01/17:
+    Fix a bug in settings format.
+    Add a DebugRootPath environment variable.
+
+#### SettingManager-1.6 - 12/01/17:
+    Force polling for State and Status.
+
+#### SettingManager-1.5 - 09/12/16:
+    Moved to git and adapted to maven
+
+#### SettingManager-1.4 - 14/09/16:
+    Add a thread to server to check if settings have changed since last applied.
+
+#### SettingManager-1.3 - 20/06/16:
+    Fix a little bug in client file selection.
+
+#### SettingManager-1.2 - 06/06/16:
+    A timeout on settings added.
+
+#### SettingManager-1.1 - 13/04/16:
+    A JTree file browser added.
+
+#### SettingManager-1.0 - 24/03/16:
+    Initial revision

@@ -65,7 +65,9 @@ public class TangoDevice extends ArrayList<TangoAttribute> implements TangoConst
     public TangoDevice(String deviceName) throws DevFailed {
         this.deviceName = deviceName;
         proxy = new DeviceProxy(deviceName);
+        System.out.println("-----> "+deviceName + ".set_timeout_millis()");
         proxy.set_timeout_millis(Utils.getSettingsTimeout());
+        System.out.println("-----> "+deviceName + ".set_timeout_millis() done");
     }
     //===============================================================
     //===============================================================

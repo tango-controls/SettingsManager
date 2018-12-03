@@ -41,6 +41,11 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>true</DefaultPropValue>
     </deviceProperties>
+    <deviceProperties name="ApplyAnyWay" description="Apply setting even only one device is alive">
+      <type xsi:type="pogoDsl:BooleanType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>false</DefaultPropValue>
+    </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="1000" isDynamic="false">
       <argin description="none">
         <type xsi:type="pogoDsl:VoidType"/>

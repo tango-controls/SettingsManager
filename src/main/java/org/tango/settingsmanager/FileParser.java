@@ -49,11 +49,13 @@ import java.util.*;
 
 public class FileParser {
     private int mode;
+    private boolean applyAnyWay;
     private List<String> lines = new ArrayList<>();
     //===============================================================
     //===============================================================
-    public FileParser(String fileName, int mode) throws DevFailed {
+    public FileParser(String fileName, int mode, boolean applyAnyWay) throws DevFailed {
         this.mode = mode;
+        this.applyAnyWay = applyAnyWay;
         Utils.debugTrace("Parsing file: " + fileName);
         lines = Utils.readFileLines(fileName);
         if (!lines.get(0).startsWith(ICommons.identifier))
@@ -67,7 +69,12 @@ public class FileParser {
         //  Convert to TangoAttributes
         TangoDeviceList deviceList = new TangoDeviceList(mode, useFormat);
         for (Attribute attribute : attributes) {
-            deviceList.addAttribute(attribute.getName(), attribute.getStrValues());
+            try {
+                deviceList.addAttribute(attribute.getName(), attribute.getStrValues());
+            } catch (DevFailed e) {
+                if (!applyAnyWay)
+                    throw e;
+            }
          }
         return deviceList;
     }
@@ -130,7 +137,7 @@ public class FileParser {
         List<String>    strValues = new ArrayList<>();
         while (stk.hasMoreTokens())
             strValues.add(stk.nextToken().trim());
-        return strValues.toArray(new String[strValues.size()]);
+        return strValues.toArray(new String[0]);
     }
     //===============================================================
     //===============================================================

@@ -57,6 +57,31 @@ public class Utils {
     private static final int wPadding = 30;
     private static final int hPadding = 2;
     private static boolean debugMode;
+    private static Utils instance = new Utils();
+    //===============================================================
+    //===============================================================
+    public static Utils getInstance() {
+        return instance;
+    }
+    //===============================================================
+    //===============================================================
+    public String getApplicationName() {
+        String applicationName = getClass().getPackage().getImplementationTitle();
+        if (applicationName==null)
+            applicationName = "SettingManager";
+
+        String release = getClass().getPackage().getImplementationVersion();
+        if (release!=null)
+            applicationName += "-" + release;
+        else
+            applicationName += " - not released";
+        return applicationName;
+    }
+    //===============================================================
+    //===============================================================
+
+
+
     //===============================================================
     /*
      *  Initialize the timeout value for client

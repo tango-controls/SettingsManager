@@ -46,7 +46,8 @@ import org.tango.settingsmanager.client.gui_utils.IconUtils;
 import org.tango.settingsmanager.client.gui_utils.ListSelectionDialog;
 import org.tango.settingsmanager.client.gui_utils.PopupHtml;
 import org.tango.settingsmanager.commons.ICommons;
-import org.tango.settingsmanager.commons.ReleaseNote;
+import org.tango.settingsmanager.commons.ReleaseNotes;
+import org.tango.settingsmanager.commons.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,7 +73,7 @@ public class SettingsManagerPanel extends JFrame {
         initComponents();
         if (startProject()) {
             ImageIcon tangoLogo = IconUtils.getInstance().getIcon("TangoClass.gif", 0.75);
-            setTitle(ICommons.revNumber);
+            setTitle(Utils.getInstance().getApplicationName());
             setIconImage(tangoLogo.getImage());
             addStateViewer(settingsClient.getManagerDeviceName());
         }
@@ -347,7 +348,7 @@ public class SettingsManagerPanel extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void releaseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_releaseMenuItemActionPerformed
-        new PopupHtml(this).show(ReleaseNote.str);
+        new PopupHtml(this).show(ReleaseNotes.htmlString);
     }//GEN-LAST:event_releaseMenuItemActionPerformed
     //=======================================================
 	//=======================================================
