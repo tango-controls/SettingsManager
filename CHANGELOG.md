@@ -1,5 +1,8 @@
 # Changelog
 
+#### SettingManager-3.2 - 28/06/19:
+    Fix a bug when format is not specified
+
 #### SettingManager-3.1 - 03/12/18:
     ApplyAnyWay property added.
 

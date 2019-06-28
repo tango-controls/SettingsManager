@@ -68,7 +68,7 @@ public class FileGenerator {
      */
     //===============================================================
     public FileGenerator(List<String> attributeNames, boolean useFormat) throws DevFailed {
-        this(attributeNames.toArray(new String[attributeNames.size()]), useFormat);
+        this(attributeNames.toArray(new String[0]), useFormat);
     }
     //===============================================================
     /**
@@ -165,7 +165,7 @@ public class FileGenerator {
     }
     //===============================================================
     //===============================================================
-    public TangoDeviceList generate() throws DevFailed {
+    public TangoDeviceList generate() {
         fileContent = "";
         tangoDeviceList.manageSettings();
         DevState generateState = tangoDeviceList.getRunningState();

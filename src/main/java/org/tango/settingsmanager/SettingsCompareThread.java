@@ -111,7 +111,7 @@ public class SettingsCompareThread extends Thread {
     //===============================================================
     public String[] getAlarmAttributes() {
         synchronized (monitor) {
-            return lastAlarmAttributes.toArray(new String[lastAlarmAttributes.size()]);
+            return lastAlarmAttributes.toArray(new String[0]);
         }
     }
     //===============================================================

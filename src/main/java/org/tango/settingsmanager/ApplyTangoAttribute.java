@@ -38,7 +38,6 @@ import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.AttributeInfoEx;
 import fr.esrf.TangoDs.Except;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,7 +50,7 @@ import java.util.List;
 
 public class ApplyTangoAttribute extends TangoAttribute {
     protected AttributeInfoEx attributeInfo;
-    protected List<String[]> strValues = new ArrayList<>();
+    protected List<String[]> strValues;
     private static final String NotInitialized = "Not initialised";
     //===============================================================
     //===============================================================

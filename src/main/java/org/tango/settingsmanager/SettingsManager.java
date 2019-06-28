@@ -1082,6 +1082,13 @@ public class SettingsManager {
 			absolutePath = settingsFilesPath;
 		else
 			absolutePath = rootPath + '/' + settingsFilesPath;
+		// used to debug
+		String os = System.getProperty("os.name");
+		if (os.toLowerCase().startsWith("windows")) {
+			if (absolutePath.startsWith("/segfs"))
+				absolutePath = "y:" + absolutePath.substring("/segfs".length());
+		}
+
 		//	Check if exists
 		File file = new File(absolutePath);
 		if (!file.exists())

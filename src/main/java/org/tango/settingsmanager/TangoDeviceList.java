@@ -143,19 +143,19 @@ public class TangoDeviceList extends ArrayList<TangoDevice>  {
     //===============================================================
     //===============================================================
     public String getRunningStatus() {
-        String status = "";
+        StringBuilder status = new StringBuilder();
         for (TangoDevice device : this) {
             String deviceStatus = device.getStatus();
             if (deviceStatus!=null)
-                status += device.getDeviceName() + ": " + deviceStatus +"\n";
+                status.append(device.getDeviceName()).append(": ").append(deviceStatus).append("\n");
         }
-        if (status.isEmpty()) {
-            status = ICommons.OK_MESSAGE;
+        if (status.length() == 0) {
+            status = new StringBuilder(ICommons.OK_MESSAGE);
         }
         else {
-            status = ICommons.actionName[mode]+" settings failed:\n" + status.trim();
+            status = new StringBuilder(ICommons.actionName[mode] + " settings failed:\n" + status.toString().trim());
         }
-        return status;
+        return status.toString();
     }
     //===============================================================
     //===============================================================

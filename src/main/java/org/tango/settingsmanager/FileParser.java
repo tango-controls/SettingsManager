@@ -176,7 +176,9 @@ public class FileParser {
             //  Compare name
             if (!attribute.getName().equals(name))
                 Except.throw_exception("CompareError",
-                        "Apply and Read have different name (?)\n"+name + " != " + attribute.getName());
+                        "Apply and Read have different name (?)\n"+
+                                name + " != " + attribute.getName());
+
             //  Compare data size
             if (attribute.size()!=this.size())
                 Except.throw_exception("CompareError", "Apply and Read have different size");
