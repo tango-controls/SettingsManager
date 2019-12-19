@@ -52,25 +52,3 @@ documentation:
 	\
 	$(SOURCE_FILES)/SettingsManager.java
 
-
-
-
-TANGO_JAVA=$(TANGO_HOME)/release/java
-CLP=$(TANGO_JAVA)/appli/Pogo.jar
-UPDATE_CLASS =  org.tango.pogo.pogo_gui.tools.UpdateRelease
-version:
-	@echo "-----------------------------------------"
-	@echo "	Patching Version"
-	@echo "-----------------------------------------"
-	echo "Updating date and revision number..."
-	java -cp $(CLP) $(UPDATE_CLASS) \
-		-file $(HOME_SRC)/$(SOURCE_FILES)/commons/ICommons.java \
-		-release $(RELEASE) \
-		-title   "$(CLASS) Release Notes" \
-		-note_path $(HOME_SRC)/$(SOURCE_FILES)/commons \
-		-package $(PACKAGE).commons
-		
-
-JTANGO = $(TANGO_HOME)/release/java/lib/JTango.jar
-run:
-	java -cp target/classes/:$(JTANGO) $(PACKAGE).$(CLASS) test

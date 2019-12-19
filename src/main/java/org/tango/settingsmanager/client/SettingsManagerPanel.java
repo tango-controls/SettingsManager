@@ -124,9 +124,6 @@ public class SettingsManagerPanel extends JFrame {
                 if (event.hasFailed()) {
                     ErrorPane.showErrorMessage(new JFrame(),
                             "Applying file " + fileName, event.getDevFailed());
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(),
-                            "Settings loaded from  " + event.getFileName());
                 }
                 break;
             case SettingsManagerClient.GENERATED:

@@ -46,6 +46,11 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>false</DefaultPropValue>
     </deviceProperties>
+    <deviceProperties name="AsynchronousApply" description="Will execute ApplySettings command asynchronously if true.&#xA;Useful for large number of attributes">
+      <type xsi:type="pogoDsl:BooleanType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>false</DefaultPropValue>
+    </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="1000" isDynamic="false">
       <argin description="none">
         <type xsi:type="pogoDsl:VoidType"/>
@@ -180,6 +185,7 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="Period (in seconds) to check if settings have change since last applied.&#xA;" label="Check Change Period" unit="sec." standardUnit="" displayUnit="" format="" maxValue="300" minValue="1" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
       <eventCriteria relChange="" absChange="1" period=""/>
+      <writeExcludedStates>MOVING</writeExcludedStates>
     </attributes>
     <attributes name="DefaultAttributes" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="512" maxY="" allocReadMember="true" isDynamic="false">
       <dataType xsi:type="pogoDsl:StringType"/>
@@ -197,12 +203,19 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="List of attributes in ALARM" label="Alarm attributes" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <pipes name="SettingValues" description="Returns the attributes with their values (setpoints)." label="Setting Values" rwType="READ" displayLevel="OPERATOR"/>
-    <pipes name="LastAppliedFileContent" description="Returns last applied file content" label="Last applied file content" rwType="READ" displayLevel="OPERATOR"/>
+    <pipes name="SettingValues" description="Returns the attributes with their values (setpoints)." label="Setting Values" rwType="READ" displayLevel="OPERATOR">
+      <readExcludedStates>MOVING</readExcludedStates>
+    </pipes>
+    <pipes name="LastAppliedFileContent" description="Returns last applied file content" label="Last applied file content" rwType="READ" displayLevel="OPERATOR">
+      <readExcludedStates>MOVING</readExcludedStates>
+    </pipes>
     <states name="ON" description="The device is ready to apply settings.">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </states>
     <states name="ALARM" description="The device has applied settings, but at least one attribute apply has failed.&#xA;Or Settings have been applied but changed by someone.">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="MOVING" description="The device is applying the settings.">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </states>
     <preferences docHome="./doc_html" makefileHome="/segfs/tango/cppserver/env"/>

@@ -181,7 +181,7 @@ public class FileParser {
 
             //  Compare data size
             if (attribute.size()!=this.size())
-                Except.throw_exception("CompareError", "Apply and Read have different size");
+                Except.throw_exception("CompareError", name+": Apply and Read have different size");
 
             //  Compare values
             for (int i=0 ; i<size() ; i++) {

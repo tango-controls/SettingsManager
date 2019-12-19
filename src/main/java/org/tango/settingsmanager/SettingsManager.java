@@ -298,6 +298,27 @@ public class SettingsManager {
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setApplyAnyWay
 	}
 	
+	/**
+	 * Device Property AsynchronousApply
+	 * Will execute ApplySettings command asynchronously if true.
+	 * Useful for large number of attributes
+	 */
+	@DeviceProperty(name="AsynchronousApply", description="Will execute ApplySettings command asynchronously if true.\nUseful for large number of attributes" ,
+	        defaultValue={ "false" } )
+	private boolean asynchronousApply;
+	/**
+	 * set property AsynchronousApply
+	 * @param  asynchronousApply  see description above.
+	 */
+	public void setAsynchronousApply(boolean asynchronousApply) {
+		this.asynchronousApply = asynchronousApply;
+		/*----- PROTECTED REGION ID(SettingsManager.setAsynchronousApply) ENABLED START -----*/
+		
+		//	Check property value here
+		
+		/*----- PROTECTED REGION END -----*/	//	SettingsManager.setAsynchronousApply
+	}
+	
 
 
 	//========================================================
@@ -510,11 +531,14 @@ public class SettingsManager {
                 setState(DevState.ALARM);
             }
             else {
+            	if (state==DevState.MOVING)
+            		attributeValue.setQuality(AttrQuality.ATTR_CHANGING);
+            	else
+					attributeValue.setQuality(AttrQuality.ATTR_VALID);
                 setStatus(OK_MESSAGE);
                 setState(DevState.ON);
             }
         }
-		
 		/*----- PROTECTED REGION END -----*/	//	SettingsManager.getLastAppliedFile
 		attributeValue.setValue(lastAppliedFile);
 		xlogger.exit();
@@ -869,29 +893,22 @@ public class SettingsManager {
 			deviceList.reset();
 		action = ICommons.APPLY;
 		try {
-			//	Parse file and start applying
+			//	ToDo Parse file before applying
 			String fileName = Utils.settingsFile(absolutePath + '/' + applySettingsIn);
 			deviceList = new FileParser(
 					fileName, ICommons.APPLY, applyAnyWay).parseAttributes(useAttributeFormat);
 			if (deviceList.isEmpty())
 				Except.throw_exception("NoDeviceFound", "No device alive to apply settings");
-			deviceList.manageSettings();
 
-			//	And Check results
-			setState(deviceList.getRunningState());
-			setStatus(deviceList.getRunningStatus());
-			if (state==DevState.ALARM) {
-				Except.throw_exception("AppliedFailed", status);
+			//	OK can do apply (Asynchronously or Synchronously)
+			if (asynchronousApply) {
+				//	Start a thread to apply
+				new ApplyThread(applySettingsIn, fileName).start();
 			}
-			lastAppliedFile = Utils.getDisplayFileName(applySettingsIn);
-            setTheLastAppliedFileProperty();
-
-            //  Start a thread to check if settings have changed after apply
-            if (checkChanges && checkChangePeriod>0) {
-                compareThread = new SettingsCompareThread(
-                		fileName, checkChangePeriod, useAttributeFormat);
-                compareThread.start();
-            }
+			else {
+				//	Apply settings synchronously
+				doApplySettings(applySettingsIn, fileName);
+			}
 		}
 		catch (DevFailed e) {
 			setState(DevState.ALARM);
@@ -1066,7 +1083,9 @@ public class SettingsManager {
 	//	Programmer's methods
 	//========================================================
 	/*----- PROTECTED REGION ID(SettingsManager.methods) ENABLED START -----*/
-	
+
+	//=======================================================
+	//=======================================================
 	private void checkProperties() throws DevFailed {
 		//	Class property does not work in java server API
 		//	Do it with client API
@@ -1097,11 +1116,70 @@ public class SettingsManager {
 
 		System.out.println("Absolute path: " + absolutePath);
 	}
-
+	//=======================================================
+	//=======================================================
 	private void setTheLastAppliedFileProperty() throws DevFailed {
 	    new DeviceProxy(deviceManager.getName()).put_property(
 	            new DbDatum("TheLastAppliedFile", lastAppliedFile));
     }
+	//=======================================================
+	//=======================================================
+    private void doApplySettings(String fileName, String fullFileName) {
+		long t0 = System.currentTimeMillis();
+		deviceList.manageSettings();
+		try {
+
+			//	And Check results
+			setState(deviceList.getRunningState());
+			setStatus(deviceList.getRunningStatus());
+			if (state == DevState.ALARM) {
+				Except.throw_exception("AppliedFailed", status);
+			}
+			lastAppliedFile = Utils.getDisplayFileName(fileName);
+			setTheLastAppliedFileProperty();
+
+			//  Start a thread to check if settings have changed after apply
+			if (checkChanges && checkChangePeriod>0) {
+				compareThread = new SettingsCompareThread(
+						fullFileName, checkChangePeriod, useAttributeFormat);
+				compareThread.start();
+			}
+			System.out.println((System.currentTimeMillis() - t0) / 1000 + " seconds");
+		}
+		catch (DevFailed e) {
+			setState(DevState.ALARM);
+			setStatus(e.errors[0].desc);
+			System.out.println((System.currentTimeMillis()-t0)/1000 + " seconds");
+		}
+	}
+	//=======================================================
+	//=======================================================
+	private class ApplyThread extends Thread {
+		private String fileName;
+		private String fullFileName;
+		//===================================================
+		private ApplyThread(String fileName, String fullFileName) {
+			this.fileName = fileName;
+			this.fullFileName = fullFileName;
+		}
+		//===================================================
+		@Override
+		public void run() {
+			setState(DevState.MOVING);
+			setStatus("Applying settings from " + fileName);
+
+			//	DFo the apply settings
+			doApplySettings(fileName, fullFileName);
+
+			if (state!=DevState.ALARM) {
+				setState(DevState.ON);
+			}
+		}
+		//===================================================
+	}
+	//=======================================================
+	//=======================================================
+
 	/*----- PROTECTED REGION END -----*/	//	SettingsManager.methods
 
 

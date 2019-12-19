@@ -1,5 +1,8 @@
 # Changelog
 
+#### SettingManager-4.0 - 19/12/19:
+    Add an asynchronous mode to apply settings (AsynchronousApply property)
+
 #### SettingManager-3.2 - 28/06/19:
     Fix a bug when format is not specified
 
