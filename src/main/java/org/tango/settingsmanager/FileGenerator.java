@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -112,9 +113,12 @@ public class FileGenerator {
             else if (element.toLowerCase().startsWith("author"))
                 author = value;
             else if (element.toLowerCase().startsWith("comments"))
-                comments.add(value);
-            else if (element.toLowerCase().startsWith("file"))
-                fileName = value;
+                 {
+//                     comments.add(value);
+                    addMultiLineComment(value);
+                 }
+                 else if (element.toLowerCase().startsWith("file"))
+                         fileName = value;
         }
         //  Verify coherency
         if (fileName == null)
@@ -137,6 +141,16 @@ public class FileGenerator {
         for (TangoDevice tangoDevice : tangoDeviceList) {
             tangoDevice.ping();
         }
+    }
+    
+    private void addMultiLineComment(String mlComment)
+    {
+        if (mlComment == null) return;
+        if (mlComment.isEmpty()) return;
+        
+        StringTokenizer stk = new StringTokenizer(mlComment, "\n");
+        while (stk.hasMoreTokens())
+            comments.add(stk.nextToken());        
     }
     //===============================================================
     //===============================================================
