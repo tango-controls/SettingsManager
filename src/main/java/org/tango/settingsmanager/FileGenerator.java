@@ -53,11 +53,11 @@ import java.util.StringTokenizer;
 
 public class FileGenerator {
 
-    private TangoDeviceList tangoDeviceList;
+    private final TangoDeviceList tangoDeviceList;
     private String fileName = null;
     private String fullFileName = null;
     private String author = "";
-    private List<String> comments = new ArrayList<>();
+    private final List<String> comments = new ArrayList<>();
     private DevFailed devFailed = null;
     private boolean writeFile = true;
     private String fileContent;
@@ -113,12 +113,9 @@ public class FileGenerator {
             else if (element.toLowerCase().startsWith("author"))
                 author = value;
             else if (element.toLowerCase().startsWith("comments"))
-                 {
-//                     comments.add(value);
                     addMultiLineComment(value);
-                 }
-                 else if (element.toLowerCase().startsWith("file"))
-                         fileName = value;
+            else if (element.toLowerCase().startsWith("file"))
+                     fileName = value;
         }
         //  Verify coherency
         if (fileName == null)
@@ -142,9 +139,9 @@ public class FileGenerator {
             tangoDevice.ping();
         }
     }
-    
-    private void addMultiLineComment(String mlComment)
-    {
+    //===============================================================
+    //===============================================================
+    private void addMultiLineComment(String mlComment) {
         if (mlComment == null) return;
         if (mlComment.isEmpty()) return;
         

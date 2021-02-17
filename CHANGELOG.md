@@ -1,5 +1,8 @@
 # Changelog
 
+#### SettingManager-4.1 - 17/02/21:
+    Support for multiple lines comments
+
 #### SettingManager-4.0 - 19/12/19:
     Add an asynchronous mode to apply settings (AsynchronousApply property)
 

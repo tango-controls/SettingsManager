@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 19-12-2019  08:07</center>\n" + 
+		"generated: 17-02-2021  10:18</center>\n" + 
+		"<li><b>SettingManager-4.1 - 17/02/21:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Support for multiple lines comments<br>" + 
 		"<li><b>SettingManager-4.0 - 19/12/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add an asynchronous mode to apply settings (AsynchronousApply property)<br>" + 
 		"<li><b>SettingManager-3.2 - 28/06/19:</b><br>" + 
